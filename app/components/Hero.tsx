@@ -182,7 +182,7 @@ function CenterHeadline({ lang, hFont, show, isMobile, insideLap }: {
       style={insideLap ? {
         position: "absolute",
         top: "30%",
-        left: "32%",
+        left: lang === "ar" ? "42%" : "32%",
         transform: "skewY(-5deg) rotateY(-50deg) rotateX(8deg)",
         transformStyle: "preserve-3d",
         perspective: "800px",

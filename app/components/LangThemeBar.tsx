@@ -20,8 +20,8 @@ export default function LangThemeBar({ lang, theme, onLang, onTheme, solid }: Pr
     e.currentTarget.style.color = "var(--fg)";
   };
   const onBtnLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.borderColor = "var(--line)";
-    e.currentTarget.style.color = "var(--fg-dim)";
+    e.currentTarget.style.borderColor = "var(--accent-dim)";
+    e.currentTarget.style.color = "var(--fg)";
   };
 
   return (
@@ -37,26 +37,29 @@ export default function LangThemeBar({ lang, theme, onLang, onTheme, solid }: Pr
         />
       </div>
 
-      {/* Language toggle */}
-      <button
-        className={`${s.btn} ${isAr ? s.btnAr : s.btnEn}`}
-        onClick={() => onLang(isAr ? "en" : "ar")}
-        onMouseEnter={onBtnEnter}
-        onMouseLeave={onBtnLeave}
-      >
-        {isAr ? "EN" : "عربي"}
-      </button>
+      {/* Language + theme toggles */}
+      <div className={s.actions}>
+        {/* Language toggle */}
+        <button
+          className={`${s.btn} ${isAr ? s.btnAr : s.btnEn}`}
+          onClick={() => onLang(isAr ? "en" : "ar")}
+          onMouseEnter={onBtnEnter}
+          onMouseLeave={onBtnLeave}
+        >
+          {isAr ? "EN" : "عربي"}
+        </button>
 
-      {/* Theme toggle */}
-      <button
-        className={`${s.btn} ${s.btnTheme}`}
-        onClick={onTheme}
-        title={isDark ? "Light mode" : "Dark mode"}
-        onMouseEnter={onBtnEnter}
-        onMouseLeave={onBtnLeave}
-      >
-        {isDark ? "☀" : "◑"}
-      </button>
+        {/* Theme toggle */}
+        <button
+          className={`${s.btn} ${s.btnTheme}`}
+          onClick={onTheme}
+          title={isDark ? "Light mode" : "Dark mode"}
+          onMouseEnter={onBtnEnter}
+          onMouseLeave={onBtnLeave}
+        >
+          {isDark ? "☀" : "◑"}
+        </button>
+      </div>
     </div>
   );
 }

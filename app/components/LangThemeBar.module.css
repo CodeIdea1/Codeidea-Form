@@ -83,7 +83,12 @@
 
   .btn {
     flex-shrink: 0;
-    padding: 0.45rem 0.7rem;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.78rem;
+  }
+  .btnTheme {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -98,6 +103,17 @@
   .bar.scrolled {
     padding: 0.5rem 0.75rem !important;
   }
+  .actions {
+    gap: 0.35rem;
+  }
+  .btn {
+    padding: 0.48rem 0.8rem;
+    font-size: 0.72rem;
+  }
+  .btnTheme {
+    padding: 0.48rem 0.65rem;
+    font-size: 0.85rem;
+  }
 }
 
 /* Bring the logo a bit further left on desktop */
@@ -108,20 +124,29 @@
 
 .btn {
   background: transparent;
-  border: 1px solid var(--line);
-  color: var(--fg-dim);
-  font-size: 0.6rem;
+  border: 1.5px solid var(--accent-dim);
+  color: var(--fg);
+  font-size: 0.85rem;
+  font-weight: 600;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 0.45rem 0.9rem;
-  transition: border-color 0.3s, color 0.3s;
+  padding: 0.65rem 1.15rem;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
   line-height: 1;
   white-space: nowrap;
 }
+.btn:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .btnEn { font-family: var(--font-geist-mono); letter-spacing: 0.18em; }
 .btnAr { font-family: var(--font-arabic); letter-spacing: 0.05em; }
 
 .btnTheme {
-  padding: 0.45rem 0.7rem;
-  font-size: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 1rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-inline-start: auto;
 }
