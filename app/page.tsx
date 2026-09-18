@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, startTransition } from "react";
 import { Lang, t } from "./i18n";
 import LangThemeBar from "./components/LangThemeBar";
 import ParticlesBackground from "./components/ParticlesBackground";
@@ -42,8 +42,10 @@ export default function Page() {
   }, []);
 
   function handleSuccess(name: string) {
-    setSubmittedName(name);
-    setSubmitted(true);
+    startTransition(() => {
+      setSubmittedName(name);
+      setSubmitted(true);
+    });
   }
 
   function handleLangChange(newLang: Lang) {
