@@ -253,7 +253,7 @@
 .ctaRowHidden { opacity: 0; transform: translateY(16px); }
 
 .btn {
-  background: var(--fg);
+  background: var(--accent);
   color: var(--bg);
   border: none;
   padding: 1rem 2.2rem;
@@ -263,6 +263,10 @@
   position: relative;
   z-index: 5;
   
+}
+/* Light mode: keep light button background */
+:global(html.light) .btn {
+  background: var(--fg);
 }
 .btnEn { font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; }
 .btnAr { font-size: 0.95rem; letter-spacing: 0; text-transform: none; }

@@ -582,7 +582,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
               (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)";
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = "var(--fg)";
+              (e.currentTarget as HTMLButtonElement).style.background = theme === "light" ? "var(--fg)" : "var(--accent)";
               (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
             }}
           >
