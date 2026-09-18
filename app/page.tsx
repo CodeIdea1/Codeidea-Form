@@ -72,6 +72,7 @@ export default function Page() {
 
   const sections = [
     <Hero key="hero" onCTA={handleCTAClick} tr={tr} lang={lang}
+      theme={theme}
       registerProgress={cb => { heroProgressCbRef.current = cb; }}
       onHoverChange={v => hoverSetterRef.current?.(v)}
       scaleProgressRef={scaleProgressRef}

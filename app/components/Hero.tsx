@@ -299,10 +299,11 @@ function ShootingStar() {
   );
 }
 
-export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange, scaleProgressRef }: {
+export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHoverChange, scaleProgressRef }: {
   onCTA: () => void;
   tr: Translations;
   lang: Lang;
+  theme: "dark" | "light";
   registerProgress?: (cb: (p: number) => void) => void;
   onHoverChange?: (hovered: boolean) => void;
   scaleProgressRef?: React.MutableRefObject<number>;
@@ -479,7 +480,7 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
             onHoverChange?.(false);
           }}
         >
-          <Image src="/lappp.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+          <Image src="/laptop.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           {/* CenterHeadline inside lap so it moves with it */}
           {!isMobile && (
             <CenterHeadline lang={lang} hFont={hFont} show={loaded} isMobile={false} scaleProgressRef={scaleProgressRef} insideLap />
@@ -494,7 +495,7 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
             <span className={`${s.steamBlob} ${s.steam3}`} />
             <span className={`${s.steamBlob} ${s.steam4}`} />
           </div>
-          <Image src="/mug2.webp" alt="Mug" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+          <Image src={theme === "light" ? "/mug-white.png" : "/mug2.webp"} alt="Mug" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           <div className={s.mugTip} role="tooltip" style={{ fontFamily: hFont }} data-open={mugTipOpen} data-closed-anim={mugTipEverOpen && !mugTipOpen}>
             <span className={s.mugTipStem} aria-hidden="true" />
             <span className={s.mugTipIcon} aria-hidden="true">☕</span>
