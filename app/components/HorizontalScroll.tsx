@@ -1,26 +1,18 @@
 "use client";
 import { useEffect, useRef, useState, ReactNode } from "react";
-import gsap from "gsap";
 import ScrollProgressLine from "./ScrollProgressLine";
 import s from "./HorizontalScroll.module.css";
-
-const HOVER_SCALE = 3;
-const TARGET_Y = -300;
-const TARGET_X = 200;
-const SCALE_SCROLL_RANGE = 2500;
 
 interface Props {
   children: ReactNode | ReactNode[];
   onScrollToLast: () => void;
   onHeroProgress?: (p: number) => void;
-  onScaleProgress?: (p: number) => void;
   lang: "en" | "ar";
   resetTrigger?: number;
-  registerHoverControl?: (setHovered: (v: boolean) => void) => void;
   registerScrollToForm?: (scrollFn: () => void) => void;
 }
 
-export default function HorizontalScroll({ children, onScrollToLast, onHeroProgress, onScaleProgress, lang, resetTrigger, registerHoverControl, registerScrollToForm }: Props) {
+export default function HorizontalScroll({ children, onScrollToLast, onHeroProgress, lang, resetTrigger, registerScrollToForm }: Props) {
   const [isMobile, setIsMobile] = useState(false);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<number>(0);
@@ -28,18 +20,6 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
   const scrollRef = useRef(0);
   const targetScrollRef = useRef(0);
   const rafRef = useRef<number | null>(null);
-
-  const isImageHoveredRef = useRef(false);
-  const scaleScrollAccRef = useRef(0);
-  const firstPanelRef = useRef<HTMLDivElement | null>(null);
-  const quickYRef = useRef<((v: number) => void) | null>(null);
-  const targetScaleRef = useRef(1);
-  const targetYRef = useRef(0);
-  const scaleRafRef = useRef<number | null>(null);
-  const currentScaleRef = useRef(1);
-  const currentYAnimRef = useRef(0);
-  const currentXAnimRef = useRef(0);
-  const targetXRef = useRef(0);
 
   const panels = Array.isArray(children) ? children : [children];
   const total = panels.length;
@@ -63,39 +43,9 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
   }, [registerScrollToForm, isMobile, total]);
 
   useEffect(() => {
-    const loop = () => {
-      const el = firstPanelRef.current;
-      if (el) {
-        const changed =
-          Math.abs(targetScaleRef.current - currentScaleRef.current) > 0.0005 ||
-          Math.abs(targetYRef.current - currentYAnimRef.current) > 0.05 ||
-          Math.abs(targetXRef.current - currentXAnimRef.current) > 0.05;
-        if (changed) {
-          currentScaleRef.current += (targetScaleRef.current - currentScaleRef.current) * 0.18;
-          currentYAnimRef.current += (targetYRef.current    - currentYAnimRef.current)  * 0.18;
-          currentXAnimRef.current += (targetXRef.current    - currentXAnimRef.current)  * 0.18;
-          gsap.set(el, { scale: currentScaleRef.current, y: currentYAnimRef.current, x: currentXAnimRef.current });
-        }
-      }
-      scaleRafRef.current = requestAnimationFrame(loop);
-    };
-    scaleRafRef.current = requestAnimationFrame(loop);
-    return () => { if (scaleRafRef.current) cancelAnimationFrame(scaleRafRef.current); };
-  }, []);
-
-  useEffect(() => {
-    if (!registerHoverControl) return;
-    registerHoverControl((v: boolean) => {
-      isImageHoveredRef.current = v;
-    });
-  }, [registerHoverControl]);
-
-  useEffect(() => {
     scrollRef.current = 0;
     targetScrollRef.current = 0;
-    scaleScrollAccRef.current = 0;
     if (trackRef.current) trackRef.current.style.transform = `translate3d(0px, 0, 0)`;
-    if (firstPanelRef.current) gsap.set(firstPanelRef.current, { scale: 1, y: 0 });
   }, [resetTrigger]);
 
   useEffect(() => {
@@ -142,15 +92,6 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     if (isMobile) return;
     function onWheel(e: WheelEvent) {
       e.preventDefault();
-      if (isImageHoveredRef.current) {
-        scaleScrollAccRef.current = Math.max(0, Math.min(SCALE_SCROLL_RANGE, scaleScrollAccRef.current + e.deltaY));
-        const p = scaleScrollAccRef.current / SCALE_SCROLL_RANGE;
-        targetScaleRef.current = 1 + p * (HOVER_SCALE - 1);
-        targetYRef.current = p * TARGET_Y;
-        targetXRef.current = p * TARGET_X;
-        onScaleProgress?.(p);
-        return;
-      }
       const maxScroll = (total - 1) * window.innerWidth;
       targetScrollRef.current = Math.max(0, Math.min(maxScroll, targetScrollRef.current + e.deltaY * 2));
     }
@@ -233,7 +174,6 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
         {panels.map((child, i) => (
           <div
             key={i}
-            ref={i === 0 ? (el) => { if (el) firstPanelRef.current = el; } : undefined}
             className={s.panel}
           >
             {child}

@@ -18,10 +18,7 @@ export default function Page() {
   const [submitted, setSubmitted] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
   const [scrollKey, setScrollKey] = useState(0);
-  const scaleProgressRef = useRef(0);
   const heroProgressCbRef = useRef<((p: number) => void) | null>(null);
-  // Setter provided by HorizontalScroll to toggle hover-scale mode on the first panel
-  const hoverSetterRef = useRef<((v: boolean) => void) | null>(null);
 
   const tr = t[lang];
 
@@ -48,16 +45,24 @@ export default function Page() {
     setBarSolid(p > 0.03);
   }, []);
 
-  // Native scroll (mobile, form section): show nav background once scrolled
+  // Native scroll (mobile wrapper, form section): show nav background once scrolled
   useEffect(() => {
-    const onScroll = () => setBarSolid(window.scrollY > 10);
+    const onScroll = (e?: Event) => {
+      let y = 0;
+      const se = document.scrollingElement;
+      if (se) y = se.scrollTop;
+      const t = (e?.target as HTMLElement | null) ?? null;
+      if (t && typeof t.scrollTop === "number" && t.scrollTop > y) y = t.scrollTop;
+      setBarSolid(y > 10);
+    };
+    // Use capture on document so inner scroll containers (mobileWrapper etc.) are detected
     window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("scroll", onScroll, { capture: true, passive: true });
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const handleScaleProgress = useCallback((p: number) => {
-    scaleProgressRef.current = p;
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("scroll", onScroll, { capture: true });
+    };
   }, []);
 
   const handleSuccess = useCallback((name: string) => {
@@ -107,8 +112,6 @@ export default function Page() {
     <Hero key="hero" onCTA={handleCTAClick} tr={tr} lang={lang}
       theme={theme}
       registerProgress={cb => { heroProgressCbRef.current = cb; }}
-      onHoverChange={v => hoverSetterRef.current?.(v)}
-      scaleProgressRef={scaleProgressRef}
     />,
     ...staticSections,
   ];
@@ -117,8 +120,7 @@ export default function Page() {
     <>
       <ParticlesBackground />
       <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} solid={barSolid} />
-      <HorizontalScroll key={scrollKey} onScrollToLast={() => {}} onHeroProgress={handleHeroProgress} onScaleProgress={handleScaleProgress} lang={lang}
-        registerHoverControl={setter => { hoverSetterRef.current = setter; }}
+      <HorizontalScroll key={scrollKey} onScrollToLast={() => {}} onHeroProgress={handleHeroProgress} lang={lang}
         registerScrollToForm={scrollFn => { scrollToFormRef.current = scrollFn; }}
       >
         {sections}

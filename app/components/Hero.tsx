@@ -92,12 +92,11 @@ const PHRASES = {
   ],
 };
 
-function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideLap }: {
+function CenterHeadline({ lang, hFont, show, isMobile, insideLap }: {
   lang: Lang;
   hFont: string;
   show?: boolean;
   isMobile?: boolean;
-  scaleProgressRef?: React.MutableRefObject<number>;
   insideLap?: boolean;
 }) {
   const phrases = PHRASES[lang];
@@ -106,15 +105,6 @@ function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideL
   const currentIdx = useRef(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const animatingRef = useRef(false);
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  // Detect desktop
-  useEffect(() => {
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 769);
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
-  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -129,45 +119,6 @@ function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideL
       { autoAlpha: 1, y: 0, duration: 1, delay: 1.7, ease: "power3.out" }
     );
   }, [show]);
-
-  // Desktop: switch phrase with scaleProgress - poll ref via interval
-  const lastDesktopIdx = useRef(-1);
-  const pendingIdxRef = useRef(-1);
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (!isDesktop || !show) return;
-    const interval = setInterval(() => {
-      const p = scaleProgressRef?.current ?? 0;
-      const next = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
-      if (next === lastDesktopIdx.current) return;
-      pendingIdxRef.current = next;
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-      debounceTimer.current = setTimeout(() => {
-        const target = pendingIdxRef.current;
-        if (target === lastDesktopIdx.current) return;
-        lastDesktopIdx.current = target;
-        const top = topRef.current;
-        const bot = botRef.current;
-        if (!top || !bot) return;
-        gsap.killTweensOf([top, bot]);
-        gsap.to([top, bot], {
-          opacity: 0, y: -15, filter: 'blur(8px)',
-          duration: 0.35, ease: 'power2.in', stagger: 0.06,
-          onComplete: () => {
-            currentIdx.current = target;
-            if (topRef.current) topRef.current.textContent = phrases[target].top;
-            if (botRef.current) botRef.current.textContent = phrases[target].bottom;
-            gsap.fromTo([top, bot],
-              { opacity: 0, y: 18, filter: 'blur(8px)' },
-              { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, ease: 'power3.out', stagger: 0.1, overwrite: true }
-            );
-          }
-        });
-      }, 350);
-    }, 100);
-    return () => clearInterval(interval);
-  }, [isDesktop, show, scaleProgressRef]);
 
   const switchTo = (next: number) => {
     if (animatingRef.current || next === currentIdx.current) return;
@@ -212,9 +163,9 @@ function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideL
     });
   };
 
-  // Auto-rotate phrases on mobile only
+  // Auto-rotate phrases (all viewports)
   useEffect(() => {
-    if (isDesktop || !show) return;
+    if (!show) return;
     
     const interval = setInterval(() => {
       const nextIdx = (currentIdx.current + 1) % phrases.length;
@@ -222,11 +173,7 @@ function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideL
     }, 2200);
 
     return () => clearInterval(interval);
-  }, [isDesktop, show, phrases.length]);
-
-  useEffect(() => {
-    return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); };
-  }, []);
+  }, [show, phrases.length]);
 
   return (
     <div
@@ -299,14 +246,12 @@ function ShootingStar() {
   );
 }
 
-export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHoverChange, scaleProgressRef }: {
+export default function Hero({ onCTA, tr, lang, theme, registerProgress }: {
   onCTA: () => void;
   tr: Translations;
   lang: Lang;
   theme: "dark" | "light";
   registerProgress?: (cb: (p: number) => void) => void;
-  onHoverChange?: (hovered: boolean) => void;
-  scaleProgressRef?: React.MutableRefObject<number>;
 }) {
   const [loaded, setLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -473,17 +418,21 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
           style={{ pointerEvents: isMobile ? 'none' : 'auto' }}
           onMouseEnter={() => {
             if (isMobile) return;
-            onHoverChange?.(true);
+            const el = lapRef.current;
+            if (!el) return;
+            gsap.to(el, { scale: 1.6, y: -20, duration: 0.7, ease: "power3.out", overwrite: "auto" });
           }}
           onMouseLeave={() => {
             if (isMobile) return;
-            onHoverChange?.(false);
+            const el = lapRef.current;
+            if (!el) return;
+            gsap.to(el, { scale: 1, y: 0, duration: 0.7, ease: "power3.out", overwrite: "auto" });
           }}
         >
           <Image src="/laptop.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           {/* CenterHeadline inside lap so it moves with it */}
           {!isMobile && (
-            <CenterHeadline lang={lang} hFont={hFont} show={loaded} isMobile={false} scaleProgressRef={scaleProgressRef} insideLap />
+            <CenterHeadline lang={lang} hFont={hFont} show={loaded} isMobile={false} insideLap />
           )}
         </div>
 
@@ -529,7 +478,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
 
         {/* Center rotating headline - mobile only, desktop is inside lap */}
         {isMobile && (
-          <CenterHeadline lang={lang} hFont={hFont} show={loaded} isMobile={true} scaleProgressRef={scaleProgressRef} />
+          <CenterHeadline lang={lang} hFont={hFont} show={loaded} isMobile={true} />
         )}
       </div>
 
