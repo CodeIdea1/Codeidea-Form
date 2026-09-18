@@ -455,6 +455,10 @@
   will-change: transform, opacity;
   animation: steamRise1 5.5s ease-in-out infinite;
 }
+/* Light mode: brown steam instead of black smoke */
+:global(html.light) .steamBlob {
+  background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 70%);
+}
 .steam1 {
   left: 38%;
   width: 46px;
