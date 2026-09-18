@@ -10,8 +10,8 @@ export const t = {
     earlyAccess: "Early Access",
     firstCohortLimited: "First Cohort · Limited",
 
-    line1: ["YOU", "ASKED."],
-    line2: ["WE", "BUILT", "IT."],
+    line1: ["FROM", "LEARNING", "CODE"],
+    line2: ["TO", "CREATING", "EXPERIENCES."],
     heroSub: "The animation, interaction and web experiences you've been asking us to teach — we're finally opening the doors.",
     joinCTA: "Join Early Access →",
     mugTip: "Grab a coffee, let's create ✨",
@@ -88,8 +88,8 @@ export const t = {
     earlyAccess: "وصول مبكر — مورس",
     firstCohortLimited: "الدفعة الأولى · أماكن محدودة",
 
-    line1: ["طلبتوا."],
-    line2: ["بنيناه لكم."],
+    line1: ["من", "تعلّم", "البرمجة"],
+    line2: ["إلى", "صناعة", "التجارب."],
     heroSub: "الحركة، التفاعل، والمواقع اللي دايماً تسألون — كيف تبنونها؟ الجواب جاي. احجزوا مكانكم قبل ما تمتلئ الأماكن.",
     joinCTA: "احجز مكانك الآن ←",
     mugTip: "احضر قهوتك، وهيا نبدع ✨",

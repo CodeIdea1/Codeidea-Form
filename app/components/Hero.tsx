@@ -81,12 +81,12 @@ function LapParticles() {
 
 const PHRASES = {
   en: [
-    { top: "FROM LEARNING CODE", bottom: "TO CREATING EXPERIENCES." },
+    { top: "YOU ASKED.",       bottom: "WE BUILT IT." },
     { top: "LEARN THE",        bottom: "CRAFT." },
     { top: "START YOUR",       bottom: "JOURNEY." },
   ],
   ar: [
-    { top: "من تعلّم البرمجة",  bottom: "إلى صناعة التجارب." },
+    { top: "طلبتوا.",          bottom: "بنيناه لكم." },
     { top: "تعلّم",            bottom: "الحرفة." },
     { top: "ابدأ",             bottom: "رحلتك." },
   ],
