@@ -519,7 +519,7 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
 
         {/* Center rotating headline - mobile only, desktop is inside lap */}
         {isMobile && (
-          <CenterHeadline lang={lang} hFont={hFont} switchRef={headlineSwitchRef} show={loaded} isMobile={true} scaleProgressRef={scaleProgressRef} />
+          <CenterHeadline lang={lang} hFont={hFont} show={loaded} isMobile={true} scaleProgressRef={scaleProgressRef} />
         )}
       </div>
 
