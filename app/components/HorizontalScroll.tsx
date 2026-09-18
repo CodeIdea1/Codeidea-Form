@@ -30,7 +30,6 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
   const rafRef = useRef<number | null>(null);
 
   const isImageHoveredRef = useRef(false);
-  const lastWheelEventRef = useRef(0);
   const scaleScrollAccRef = useRef(0);
   const firstPanelRef = useRef<HTMLDivElement | null>(null);
   const targetScaleRef = useRef(1);
@@ -110,10 +109,9 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     let lastRenderedScroll = -1;
     let firedLast = false;
     function animate() {
-      // Update easing to settle each snap faster
       const diff = targetScrollRef.current - scrollRef.current;
       if (Math.abs(diff) > 0.5) {
-        scrollRef.current += diff * 0.2;
+        scrollRef.current += diff * 0.12;
       } else {
         scrollRef.current = targetScrollRef.current;
       }
@@ -152,22 +150,8 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
         onScaleProgress?.(p);
         return;
       }
-      // Ignore micro-deltas (trackpad noise while the finger rests) so a real gesture is detectable
-      const now = Date.now();
-      const magnitude = Math.abs(e.deltaY);
-      if (magnitude < 4) return;
-      const settled = Math.abs(targetScrollRef.current - scrollRef.current) <= 4;
-      const gestureEnded = now - lastWheelEventRef.current > 150;
-      lastWheelEventRef.current = now;
-      // One section per completed gesture
-      if (settled && gestureEnded) {
-        const maxScroll = (total - 1) * window.innerWidth;
-        const cur = Math.round(scrollRef.current / window.innerWidth);
-        let next = cur;
-        if (e.deltaY > 0) next = Math.min(total - 1, cur + 1);
-        else if (e.deltaY < 0) next = Math.max(0, cur - 1);
-        targetScrollRef.current = next * window.innerWidth;
-      }
+      const maxScroll = (total - 1) * window.innerWidth;
+      targetScrollRef.current = Math.max(0, Math.min(maxScroll, targetScrollRef.current + e.deltaY));
     }
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
