@@ -36,7 +36,7 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
     setLoading(true);
     
     try {
-      // Save to Firestore
+      if (!db) throw new Error("Database not available");
       await addDoc(collection(db, "leads"), {
         name: data.name,
         email: data.email,

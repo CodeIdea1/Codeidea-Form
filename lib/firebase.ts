@@ -11,7 +11,6 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase only once
 let app: FirebaseApp;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
@@ -19,6 +18,12 @@ if (!getApps().length) {
   app = getApps()[0];
 }
 
-export const auth: Auth = getAuth(app);
-export const db: Firestore = getFirestore(app);
-export { app };
+let auth: Auth | null = null;
+let db: Firestore | null = null;
+
+if (typeof window !== "undefined") {
+  auth = getAuth(app);
+  db = getFirestore(app);
+}
+
+export { auth, db, app };

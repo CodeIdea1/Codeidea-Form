@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   // Real-time listener for leads
   useEffect(() => {
-    if (!user || user.uid !== ADMIN_UID) return;
+    if (!user || user.uid !== ADMIN_UID || !db) return;
 
     const q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
     
@@ -99,6 +99,7 @@ export default function DashboardPage() {
     setStatusError("");
     
     try {
+      if (!db) throw new Error("DB not available");
       const leadRef = doc(db, "leads", leadId);
       await updateDoc(leadRef, { status: newStatus });
       
