@@ -184,6 +184,7 @@
 
 .line1Wrap { overflow: hidden; margin-bottom: 0.1em; }
 .line2Wrap { overflow: hidden; margin-bottom: clamp(0.4rem, 1vw, 0.8rem); }
+.line2Wrap .wordEn:nth-child(2) { display: block; margin-left: 0; }
 
 .heading {
   font-size: clamp(1.6rem, 5.5vw, 4.2rem);

@@ -452,7 +452,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
         {/* Floating particles above the lap */}
         <LapParticles />
 
-<ShootingStar />
+{!isMobile && <ShootingStar />}
         {/* tree */}
         <div className={`${s.tree} ${loaded ? s.treeLoaded : s.treeHidden}`}>
           <Image src="/main-tree.webp" alt="" fill style={{ objectFit: "contain", objectPosition: "bottom left", pointerEvents: "none" }} />
