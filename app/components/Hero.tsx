@@ -265,7 +265,7 @@ function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideL
           fontFamily: hFont,
           fontSize: isMobile ? "5.8vw" : "2.6vw",
           fontWeight: 700,
-          color: "var(--fg)",
+          color: "#f0ede8",
           letterSpacing: "-0.04em",
           textTransform: "uppercase",
           marginBottom: "0.1em",
@@ -280,7 +280,7 @@ function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideL
           fontFamily: hFont,
           fontSize: isMobile ? "5.8vw" : "2.6vw",
           fontWeight: 700,
-          color: "var(--accent)",
+          color: "#c8b89a",
           letterSpacing: "-0.04em",
           textTransform: "uppercase",
         }}
