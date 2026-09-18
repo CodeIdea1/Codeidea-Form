@@ -1,0 +1,63 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { Translations, Lang } from "../i18n";
+import s from "./TheQuestion.module.css";
+
+export default function TheQuestion({ tr, lang }: { tr: Translations; lang: Lang }) {
+  const isAr = lang === "ar";
+  const hFont = isAr ? "var(--font-arabic)" : "var(--font-geist-sans)";
+  const mFont = isAr ? "var(--font-arabic)" : "var(--font-geist-mono)";
+  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const fadeIn = (delay: string) => ({
+    opacity: visible ? 1 : 0,
+    transform: visible ? "translateY(0)" : "translateY(28px)",
+    transition: `opacity 0.8s ease ${delay}, transform 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}`,
+  });
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`${s.section} ${isAr ? s.sectionRtl : s.sectionLtr}`}
+    >
+      <div className={`${s.sectionLabel} ${isAr ? s.sectionLabelRtl : s.sectionLabelLtr}`} style={fadeIn("0s")}>
+        <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.6rem", letterSpacing: isAr ? "0" : "0.25em", color: "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase" }}>
+          {tr.sectionLabel01}
+        </span>
+        <div className={s.labelLine} />
+      </div>
+
+      <div className={`${s.contentWrapper} ${isAr ? s.contentWrapperRtl : s.contentWrapperLtr}`}>
+        <p style={{ fontFamily: hFont, fontSize: isAr ? "clamp(1.1rem,2.5vw,1.5rem)" : "clamp(1rem,2.2vw,1.35rem)", color: "var(--fg-dim)", fontWeight: isAr ? 400 : 300, lineHeight: isAr ? 1.9 : 1.7, marginBottom: "clamp(1.5rem,4vw,3rem)", ...fadeIn("0.15s") }}>
+          {tr.questionIntro}
+        </p>
+
+        <div className={`${s.quoteWrapper} ${isAr ? s.quoteWrapperRtl : s.quoteWrapperLtr}`} style={fadeIn("0.3s")}>
+          <p style={{ fontFamily: hFont, fontSize: "clamp(1.8rem,5.5vw,4.5rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.025em", lineHeight: isAr ? 1.3 : 1.1, color: "var(--fg)" }}>
+            {tr.questionQuote[0]}
+            <br />
+            <span style={{ color: "var(--accent)" }}>{tr.questionQuote[1]}</span>
+          </p>
+        </div>
+
+        <p style={{ fontFamily: hFont, fontSize: isAr ? "clamp(1rem,2vw,1.2rem)" : "clamp(0.9rem,1.8vw,1.1rem)", color: "var(--fg-dim)", fontWeight: isAr ? 400 : 300, lineHeight: isAr ? 1.9 : 1.7, maxWidth: "520px", marginLeft: isAr ? "auto" : 0, ...fadeIn("0.5s") }}>
+          {tr.questionClose.split("\n").map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}
+        </p>
+      </div>
+
+      <div className={`${s.ghostNumber} ${isAr ? s.ghostNumberRtl : s.ghostNumberLtr}`} style={fadeIn("0.1s")}>01</div>
+    </section>
+  );
+}

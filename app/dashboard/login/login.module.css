@@ -1,0 +1,137 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('/backk2.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 8, 8, 0.7);
+  z-index: 0;
+}
+
+html.light .container::before {
+  background: rgba(245, 242, 237, 0.85);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 3rem 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-geist-sans);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-family: var(--font-geist-mono);
+  font-size: 0.7rem;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-family: var(--font-geist-mono);
+  font-size: 0.65rem;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.input {
+  width: 100%;
+  padding: 0.875rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  font-family: var(--font-geist-sans);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input:focus {
+  border-bottom-color: var(--accent-dim);
+}
+
+.input::placeholder {
+  color: var(--fg-muted);
+  opacity: 0.5;
+}
+
+.error {
+  padding: 0.875rem 1rem;
+  background: rgba(255, 100, 100, 0.1);
+  border: 1px solid rgba(255, 100, 100, 0.3);
+  color: rgba(255, 120, 120, 0.9);
+  font-family: var(--font-geist-sans);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.button {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-geist-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+  margin-top: 0.5rem;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--accent);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.button:disabled {
+  background: var(--fg-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}

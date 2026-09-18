@@ -1,0 +1,141 @@
+.section {
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 8vw, 7rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.sectionLabel {
+  margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionLabelLtr {
+  flex-direction: row;
+}
+
+.sectionLabelRtl {
+  flex-direction: row-reverse;
+}
+
+.labelLine {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  max-width: 80px;
+}
+
+.timelineContainer {
+  position: relative;
+}
+
+.timelineLine {
+  position: absolute;
+  top: 0.6rem;
+  width: calc(100% - 1.2rem);
+  height: 1px;
+}
+
+.timelineLineLtr {
+  left: 0.6rem;
+  right: auto;
+  background: linear-gradient(90deg, var(--accent-dim) 0%, rgba(200, 184, 154, 0.05) 100%);
+}
+
+.timelineLineRtl {
+  right: 0.6rem;
+  left: auto;
+  background: linear-gradient(270deg, var(--accent-dim) 0%, rgba(200, 184, 154, 0.05) 100%);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+}
+
+.step {
+  position: relative;
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.stepLtr {
+  text-align: left;
+}
+
+.stepRtl {
+  text-align: right;
+}
+
+.node {
+  position: absolute;
+  top: 0;
+  width: clamp(0.9rem, 1.5vw, 1.2rem);
+  height: clamp(0.9rem, 1.5vw, 1.2rem);
+  border: 1px solid var(--accent);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.nodeLtr {
+  left: 0;
+  right: auto;
+}
+
+.nodeRtl {
+  right: 0;
+  left: auto;
+}
+
+.nodeDot {
+  width: 3px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.stepHeaderLtr {
+  flex-direction: row;
+}
+
+.stepHeaderRtl {
+  flex-direction: row-reverse;
+}
+
+.timing {
+  margin-top: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.timingLtr {
+  flex-direction: row;
+}
+
+.timingRtl {
+  flex-direction: row-reverse;
+}
+
+.timingLine {
+  width: 12px;
+  height: 1px;
+  background: var(--accent-dim);
+}

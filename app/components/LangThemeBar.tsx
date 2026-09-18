@@ -1,0 +1,61 @@
+"use client";
+import { Lang } from "../i18n";
+import Image from "next/image";
+import s from "./LangThemeBar.module.css";
+
+type Props = {
+  lang: Lang;
+  theme: "dark" | "light";
+  onLang: (l: Lang) => void;
+  onTheme: () => void;
+};
+
+export default function LangThemeBar({ lang, theme, onLang, onTheme }: Props) {
+  const isDark = theme === "dark";
+  const isAr = lang === "ar";
+
+  const onBtnEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.borderColor = "var(--accent-dim)";
+    e.currentTarget.style.color = "var(--fg)";
+  };
+  const onBtnLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.borderColor = "var(--line)";
+    e.currentTarget.style.color = "var(--fg-dim)";
+  };
+
+  return (
+    <div className={`${s.bar} ${isAr ? s.barAr : s.barEn}`}>
+      {/* Logo */}
+      <div className={`${s.logoWrap} ${isAr ? s.logoWrapAr : s.logoWrapEn}`}>
+        <Image
+          src={isDark ? "/codeidea-logo-night.png" : "/codeidea-logo.png"}
+          alt="Logo"
+          width={180}
+          height={80}
+          className={s.logo}
+        />
+      </div>
+
+      {/* Language toggle */}
+      <button
+        className={`${s.btn} ${isAr ? s.btnAr : s.btnEn}`}
+        onClick={() => onLang(isAr ? "en" : "ar")}
+        onMouseEnter={onBtnEnter}
+        onMouseLeave={onBtnLeave}
+      >
+        {isAr ? "EN" : "عربي"}
+      </button>
+
+      {/* Theme toggle */}
+      <button
+        className={`${s.btn} ${s.btnTheme}`}
+        onClick={onTheme}
+        title={isDark ? "Light mode" : "Dark mode"}
+        onMouseEnter={onBtnEnter}
+        onMouseLeave={onBtnLeave}
+      >
+        {isDark ? "☀" : "◑"}
+      </button>
+    </div>
+  );
+}

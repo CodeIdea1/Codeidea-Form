@@ -1,69 +1,96 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Lang, t } from "./i18n";
+import LangThemeBar from "./components/LangThemeBar";
+import ParticlesBackground from "./components/ParticlesBackground";
+import HorizontalScroll from "./components/HorizontalScroll";
+import Hero from "./components/Hero";
+import TheQuestion from "./components/TheQuestion";
+import TheAnswer from "./components/TheAnswer";
+import Journey from "./components/Journey";
+import WhatYoureJoining from "./components/WhatYoureJoining";
+import EarlyAccessForm from "./components/EarlyAccessForm";
+import SuccessState from "./components/SuccessState";
 
-export default function Home() {
+export default function Page() {
+  const [lang, setLang] = useState<Lang>("en");
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [submitted, setSubmitted] = useState(false);
+  const [submittedName, setSubmittedName] = useState("");
+  const [scrollKey, setScrollKey] = useState(0);
+  const [scaleProgress, setScaleProgress] = useState(0);
+  const heroProgressCbRef = useRef<((p: number) => void) | null>(null);
+  // Setter provided by HorizontalScroll to toggle hover-scale mode on the first panel
+  const hoverSetterRef = useRef<((v: boolean) => void) | null>(null);
+
+  const tr = t[lang];
+
+  useEffect(() => {
+    const html = document.documentElement;
+    html.classList.remove("dark", "light");
+    html.classList.add(theme);
+    html.setAttribute("dir", tr.dir);
+    html.setAttribute("lang", lang);
+  }, [theme, lang, tr.dir]);
+
+  const handleHeroProgress = useCallback((p: number) => {
+    heroProgressCbRef.current?.(p);
+  }, []);
+
+  const handleScaleProgress = useCallback((p: number) => {
+    setScaleProgress(p);
+  }, []);
+
+  function handleSuccess(name: string) {
+    setSubmittedName(name);
+    setSubmitted(true);
+  }
+
+  function handleLangChange(newLang: Lang) {
+    setLang(newLang);
+    setScrollKey(prev => prev + 1);
+  }
+
+  if (submitted) {
+    return (
+      <>
+        <ParticlesBackground />
+        <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={() => setTheme(p => p === "dark" ? "light" : "dark")} />
+        <SuccessState name={submittedName} tr={tr} lang={lang} />
+      </>
+    );
+  }
+
+  // Function to scroll to the last section (form)
+  const scrollToFormRef = useRef<(() => void) | null>(null);
+
+  const handleCTAClick = useCallback(() => {
+    scrollToFormRef.current?.();
+  }, []);
+
+  const sections = [
+    <Hero key="hero" onCTA={handleCTAClick} tr={tr} lang={lang}
+      registerProgress={cb => { heroProgressCbRef.current = cb; }}
+      onHoverChange={v => hoverSetterRef.current?.(v)}
+      scaleProgress={scaleProgress}
+    />,
+    <TheQuestion key="q" tr={tr} lang={lang} />,
+    <TheAnswer key="a" tr={tr} lang={lang} />,
+    <Journey key="j" tr={tr} lang={lang} />,
+    <WhatYoureJoining key="w" tr={tr} lang={lang} />,
+    <EarlyAccessForm key="f" onSuccess={handleSuccess} tr={tr} lang={lang} />,
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      <ParticlesBackground />
+      <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={() => setTheme(p => p === "dark" ? "light" : "dark")} />
+      <HorizontalScroll key={scrollKey} onScrollToLast={() => {}} onHeroProgress={handleHeroProgress} onScaleProgress={handleScaleProgress} lang={lang}
+        registerHoverControl={setter => { hoverSetterRef.current = setter; }}
+        registerScrollToForm={scrollFn => { scrollToFormRef.current = scrollFn; }}
+      >
+        {sections}
+      </HorizontalScroll>
+    </>
   );
 }

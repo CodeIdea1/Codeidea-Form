@@ -1,26 +1,104 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── Dark mode (default) ── */
+:root,
+html.dark {
+  --bg: #080808;
+  --bg-rgb: 8, 8, 8;
+  --fg: #f0ede8;
+  --fg-dim: #6b6760;
+  --fg-muted: #3a3835;
+  --accent: #c8b89a;
+  --accent-dim: #7a6e60;
+  --line: rgba(240, 237, 232, 0.08);
+  --line-accent: rgba(200, 184, 154, 0.2);
+  --ghost-num: rgba(240, 237, 232, 0.02);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Light mode ── */
+html.light {
+  --bg: #f5f2ed;
+  --bg-rgb: 245, 242, 237;
+  --fg: #0e0d0b;
+  --fg-dim: #6b6760;
+  --fg-muted: #b0aa9f;
+  --accent: #8a6f4e;
+  --accent-dim: #b89a78;
+  --line: rgba(14, 13, 11, 0.1);
+  --line-accent: rgba(138, 111, 78, 0.25);
+  --ghost-num: rgba(14, 13, 11, 0.025);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg);
+  transition: background 0.4s ease, color 0.4s ease;
+  overflow: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+body[dir="rtl"] {
+  font-family: var(--font-arabic), "Noto Naskh Arabic", serif;
+}
+
+/* Grain overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 5000;
+}
+
+html.dark  body::before { opacity: 0.045; }
+html.light body::before { opacity: 0.035; }
+
+/* Hide grain overlay in dashboard pages */
+body.dashboard-page::before {
+  display: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+::-webkit-scrollbar       { width: 2px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--fg-muted); }
+
+/* Lenis smooth scroll */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }

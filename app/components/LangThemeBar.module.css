@@ -1,0 +1,76 @@
+.bar {
+  position: fixed;
+  top: clamp(1rem, 2.5vw, 1.5rem);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.barEn { right: clamp(1.5rem, 8vw, 7rem); left: auto; }
+.barAr { left: clamp(1.5rem, 8vw, 7rem); right: auto; }
+
+.logoWrap {
+  position: fixed;
+  top: clamp(1rem, 2.5vw, 1.5rem);
+  z-index: 1000;
+}
+.logoWrapEn { left: clamp(1.5rem, 8vw, 7rem); right: auto; }
+.logoWrapAr { right: clamp(1.5rem, 8vw, 7rem); left: auto; }
+
+.logo {
+  width: auto;
+  height: 70px;
+  transition: filter 0.3s ease;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .logo {
+    height: 48px; /* Smaller logo on mobile */
+  }
+  
+  .bar {
+    top: clamp(1rem, 2.5vw, 1.5rem);
+    display: flex;
+    align-items: center;
+  }
+  
+  .logoWrap {
+    top: clamp(0.85rem, 2.2vw, 1.35rem); /* Slightly higher than bar */
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    height: 42px; /* Even smaller on small screens */
+  }
+  
+  .bar {
+    top: clamp( 1.7rem, 2.5vw, 1.5rem);
+  }
+  
+  .logoWrap {
+    top: clamp(0.85rem, 2.2vw, 1.35rem); /* Slightly higher than bar */
+  }
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--fg-dim);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.45rem 0.9rem;
+  transition: border-color 0.3s, color 0.3s;
+  line-height: 1;
+}
+.btnEn { font-family: var(--font-geist-mono); letter-spacing: 0.18em; }
+.btnAr { font-family: var(--font-arabic); letter-spacing: 0.05em; }
+
+.btnTheme {
+  padding: 0.45rem 0.7rem;
+  font-size: 0.75rem;
+}

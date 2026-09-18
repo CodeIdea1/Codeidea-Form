@@ -1,0 +1,175 @@
+.section {
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 8vw, 7rem);
+  position: relative;
+  overflow: hidden auto;
+}
+
+.sectionLabel {
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionLabelLtr {
+  flex-direction: row;
+}
+
+.sectionLabelRtl {
+  flex-direction: row-reverse;
+}
+
+.labelLine {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  max-width: 80px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+
+.headlineColumn {
+}
+
+.headlineColumnLtr {
+  text-align: left;
+  order: 1;
+}
+
+.headlineColumnRtl {
+  text-align: right;
+  order: 2;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.formLtr {
+  order: 2;
+}
+
+.formRtl {
+  order: 1;
+}
+
+.fieldWrapper {
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.labelLtr {
+  text-align: left;
+}
+
+.labelRtl {
+  text-align: right;
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  padding: 0.75rem 0;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.inputLtr {
+  text-align: left;
+  direction: ltr;
+}
+
+.inputRtl {
+  text-align: right;
+  direction: rtl;
+}
+
+.input:focus {
+  border-bottom-color: var(--accent-dim);
+}
+
+.inputError {
+  border-bottom-color: rgba(255, 100, 100, 0.5) !important;
+}
+
+.select {
+  cursor: pointer;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-size: 10px 6px;
+}
+
+.selectLtr {
+  background-position: right 0.5rem center;
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+.selectRtl {
+  background-position: left 0.5rem center;
+  padding-left: 1.5rem;
+  padding-right: 0;
+}
+
+.errorText {
+  margin-top: 0.2rem;
+  color: rgba(255, 120, 120, 0.8);
+}
+
+.errorTextLtr {
+  text-align: left;
+}
+
+.errorTextRtl {
+  text-align: right;
+}
+
+.submitButton {
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  margin-top: 0.5rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--accent);
+}
+
+.submitButton:disabled {
+  background: var(--fg-muted);
+  cursor: not-allowed;
+}
+
+.disclaimer {
+  line-height: 1.6;
+}
+
+.disclaimerLtr {
+  text-align: left;
+}
+
+.disclaimerRtl {
+  text-align: right;
+}

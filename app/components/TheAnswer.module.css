@@ -1,0 +1,90 @@
+.section {
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 8vw, 7rem);
+  position: relative;
+  background: linear-gradient(135deg, transparent 0%, rgba(200, 184, 154, 0.04) 50%, transparent 100%);
+}
+
+.sectionLabel {
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionLabelLtr {
+  flex-direction: row;
+}
+
+.sectionLabelRtl {
+  flex-direction: row-reverse;
+}
+
+.labelLine {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  max-width: 80px;
+}
+
+.contentWrapper {
+  max-width: 900px;
+}
+
+.contentWrapperLtr {
+  text-align: left;
+  margin-left: 0;
+}
+
+.contentWrapperRtl {
+  text-align: right;
+  margin-left: auto;
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.badgeRowLtr {
+  flex-direction: row;
+}
+
+.badgeRowRtl {
+  flex-direction: row-reverse;
+}
+
+.badgeLine {
+  width: 40px;
+  height: 1px;
+  background: var(--accent-dim);
+}
+
+.ghostNumber {
+  position: absolute;
+  bottom: clamp(2rem, 6vw, 5rem);
+  font-family: var(--font-geist-mono);
+  font-size: clamp(6rem, 18vw, 16rem);
+  font-weight: 700;
+  color: var(--ghost-num);
+  letter-spacing: -0.05em;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.ghostNumberLtr {
+  right: clamp(1.5rem, 8vw, 7rem);
+  left: auto;
+}
+
+.ghostNumberRtl {
+  left: clamp(1.5rem, 8vw, 7rem);
+  right: auto;
+}

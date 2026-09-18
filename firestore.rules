@@ -1,0 +1,54 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Admin user ID - only this user can read and update leads
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == "oBHwBrAionRUW1nHWrcLVxAr0N33";
+    }
+    
+    // Validate lead data structure and fields
+    function isValidLead() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['name', 'email', 'whatsapp', 'interest', 'status', 'createdAt'])
+        && data.name is string
+        && data.email is string
+        && data.whatsapp is string
+        && data.interest is string
+        && data.status is string
+        && data.status == "new"
+        && data.createdAt is timestamp;
+    }
+    
+    // Validate status update - only status field should be updated
+    function isValidStatusUpdate() {
+      let data = request.resource.data;
+      let allowedStatuses = ['new', 'contacted', 'meeting', 'proposal', 'won', 'lost'];
+      return data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && data.status in allowedStatuses;
+    }
+    
+    // Leads collection rules
+    match /leads/{leadId} {
+      // Anyone can create a lead (for the public form submission)
+      // But only with valid data structure and status must be "new"
+      allow create: if isValidLead();
+      
+      // Only admin can read leads
+      allow read: if isAdmin();
+      
+      // Only admin can update leads (for status changes)
+      // And only the status field can be updated
+      allow update: if isAdmin() && isValidStatusUpdate();
+      
+      // Only admin can delete leads (if needed in the future)
+      allow delete: if isAdmin();
+    }
+    
+    // Deny all other collections by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
