@@ -47,7 +47,7 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
       });
       
       setLoading(false);
-      onSuccess(data.name.split(" ")[0]);
+      setTimeout(() => onSuccess(data.name.split(" ")[0]), 0);
     } catch (error) {
       console.error("Error submitting form:", error);
       setLoading(false);
