@@ -8,9 +8,10 @@ type Props = {
   theme: "dark" | "light";
   onLang: (l: Lang) => void;
   onTheme: () => void;
+  solid?: boolean;
 };
 
-export default function LangThemeBar({ lang, theme, onLang, onTheme }: Props) {
+export default function LangThemeBar({ lang, theme, onLang, onTheme, solid }: Props) {
   const isDark = theme === "dark";
   const isAr = lang === "ar";
 
@@ -24,7 +25,7 @@ export default function LangThemeBar({ lang, theme, onLang, onTheme }: Props) {
   };
 
   return (
-    <div className={`${s.bar} ${isAr ? s.barAr : s.barEn}`}>
+    <div className={`${s.bar} ${isAr ? s.barAr : s.barEn} ${solid ? s.scrolled : ""}`}>
       {/* Logo */}
       <div className={`${s.logoWrap} ${isAr ? s.logoWrapAr : s.logoWrapEn}`}>
         <Image

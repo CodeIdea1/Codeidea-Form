@@ -41,8 +41,19 @@ export default function Page() {
     });
   }, []);
 
+  const [barSolid, setBarSolid] = useState(false);
+
   const handleHeroProgress = useCallback((p: number) => {
     heroProgressCbRef.current?.(p);
+    setBarSolid(p > 0.03);
+  }, []);
+
+  // Native scroll (mobile, form section): show nav background once scrolled
+  useEffect(() => {
+    const onScroll = () => setBarSolid(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const handleScaleProgress = useCallback((p: number) => {
@@ -86,7 +97,7 @@ export default function Page() {
     return (
       <>
         <ParticlesBackground />
-        <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} />
+        <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} solid={barSolid} />
         <SuccessState name={submittedName} tr={tr} lang={lang} />
       </>
     );
@@ -105,7 +116,7 @@ export default function Page() {
   return (
     <>
       <ParticlesBackground />
-      <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} />
+      <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} solid={barSolid} />
       <HorizontalScroll key={scrollKey} onScrollToLast={() => {}} onHeroProgress={handleHeroProgress} onScaleProgress={handleScaleProgress} lang={lang}
         registerHoverControl={setter => { hoverSetterRef.current = setter; }}
         registerScrollToForm={scrollFn => { scrollToFormRef.current = scrollFn; }}

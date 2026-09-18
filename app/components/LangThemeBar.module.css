@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  transition: background 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
 }
 .barEn { right: clamp(1.5rem, 8vw, 7rem); left: auto; }
 .barAr { left: clamp(1.5rem, 8vw, 7rem); right: auto; }
@@ -13,9 +14,20 @@
   position: fixed;
   top: clamp(1rem, 2.5vw, 1.5rem);
   z-index: 1000;
+  transition: background 0.3s ease, padding 0.3s ease;
 }
 .logoWrapEn { left: clamp(1.5rem, 8vw, 7rem); right: auto; }
 .logoWrapAr { right: clamp(1.5rem, 8vw, 7rem); left: auto; }
+
+/* Subdued background when the page has been scrolled */
+.bar.scrolled {
+  background: rgba(var(--bg-rgb), 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+}
 
 .logo {
   width: auto;
@@ -26,34 +38,63 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
   .logo {
-    height: 48px; /* Smaller logo on mobile */
+    height: 46px; /* Smaller logo on mobile */
   }
-  
+
+  /* Full-width fixed top bar so it can't be pushed off-screen */
   .bar {
-    top: clamp(1rem, 2.5vw, 1.5rem);
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 1rem;
+    flex-wrap: nowrap;
+  }
+  .barEn,
+  .barAr {
+    left: 0;
+    right: 0;
+  }
+
+  .bar.scrolled {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    padding: 0.55rem 1rem;
+  }
+
+  .logoWrap {
+    position: static; /* Flow inside the bar instead of absolute-fixed */
     display: flex;
     align-items: center;
   }
-  
-  .logoWrap {
-    top: clamp(0.85rem, 2.2vw, 1.35rem); /* Slightly higher than bar */
-    display: flex;
-    align-items: center;
+  .logoWrapEn,
+  .logoWrapAr {
+    left: auto;
+    right: auto;
   }
 }
 
 @media (max-width: 480px) {
   .logo {
-    height: 42px; /* Even smaller on small screens */
+    height: 40px; /* Even smaller on small screens */
   }
-  
   .bar {
-    top: clamp( 1.7rem, 2.5vw, 1.5rem);
+    padding: 0.5rem 0.75rem;
   }
-  
-  .logoWrap {
-    top: clamp(0.85rem, 2.2vw, 1.35rem); /* Slightly higher than bar */
+  .bar.scrolled {
+    padding: 0.5rem 0.75rem;
   }
+}
+
+/* Bring the logo a bit further left on desktop */
+@media (min-width: 769px) {
+  .logoWrapEn { left: clamp(0.5rem, 3vw, 2rem); right: auto; }
+  .logoWrapAr { right: clamp(0.5rem, 3vw, 2rem); left: auto; }
 }
 
 .btn {
@@ -66,6 +107,7 @@
   padding: 0.45rem 0.9rem;
   transition: border-color 0.3s, color 0.3s;
   line-height: 1;
+  white-space: nowrap;
 }
 .btnEn { font-family: var(--font-geist-mono); letter-spacing: 0.18em; }
 .btnAr { font-family: var(--font-arabic); letter-spacing: 0.05em; }
