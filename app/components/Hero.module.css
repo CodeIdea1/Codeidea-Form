@@ -186,7 +186,7 @@
 .line2Wrap { overflow: hidden; margin-bottom: clamp(0.4rem, 1vw, 0.8rem); }
 
 .heading {
-  font-size: clamp(2.2rem, 7.5vw, 6rem);
+  font-size: clamp(1.6rem, 5.5vw, 4.2rem);
   font-weight: 700;
   will-change: transform;
 }
@@ -659,7 +659,7 @@
   }
 
   .heading {
-    font-size: clamp(2rem, 10vw, 3.5rem);
+    font-size: clamp(1.5rem, 7vw, 2.6rem);
   }
 
   .heroDescription {
@@ -778,7 +778,7 @@
 
 @media (max-width: 480px) {
   .heading {
-    font-size: clamp(1.5rem, 9vw, 2.5rem);
+    font-size: clamp(1.1rem, 6.5vw, 1.9rem);
   }
 
   .heroDescription {
