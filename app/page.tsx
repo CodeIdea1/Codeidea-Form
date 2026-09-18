@@ -13,7 +13,10 @@ import EarlyAccessForm from "./components/EarlyAccessForm";
 import SuccessState from "./components/SuccessState";
 
 export default function Page() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "en";
+    try { return window.localStorage.getItem("site-lang") === "ar" ? "ar" : "en"; } catch { return "en"; }
+  });
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [submitted, setSubmitted] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
@@ -80,6 +83,7 @@ export default function Page() {
   }, []);
 
   const handleLangChange = useCallback((newLang: Lang) => {
+    try { window.localStorage.setItem("site-lang", newLang); } catch {}
     setLang(newLang);
     setScrollKey(prev => prev + 1);
   }, []);

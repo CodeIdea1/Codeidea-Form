@@ -648,24 +648,27 @@
     min-height: 100vh;
     height: auto;
     background-image: none;
+    overflow-x: clip;
   }
 
   .textBlock {
     max-width: 100%;
+    width: 100%;
     transform: translateY(-5vh);
-    padding: 0 1rem;
+    padding: 0;
+    align-items: stretch !important;
   }
 
+  .textBlockEn { text-align: right; }
+  .textBlockAr { text-align: left; }
+
   .line1Wrap, .line2Wrap {
-    margin-right: -1rem;
-    margin-left: 0;
-  }
-  .textBlockAr .line1Wrap, .textBlockAr .line2Wrap {
-    margin-right: 0;
-    margin-left: -1rem;
+    width: 100%;
+    margin: 0;
   }
 
   .heading {
+    width: 100%;
     font-size: clamp(1.5rem, 7vw, 2.6rem);
   }
 
