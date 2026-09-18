@@ -1,5 +1,6 @@
 "use client";
 import { Translations, Lang } from "../i18n";
+import s from "./Journey.module.css";
 
 export default function Journey({ tr, lang }: { tr: Translations; lang: Lang }) {
   const isAr = lang === "ar";
@@ -23,9 +24,9 @@ export default function Journey({ tr, lang }: { tr: Translations; lang: Lang }) 
       {/* Horizontal timeline */}
       <div style={{ position: "relative" }}>
         {/* Connecting line */}
-        <div style={{ position: "absolute", top: "0.6rem", left: isAr ? "auto" : "0.6rem", right: isAr ? "0.6rem" : "auto", width: isAr ? "calc(100% - 1.2rem)" : "calc(100% - 1.2rem)", height: "1px", background: `linear-gradient(${isAr ? "270deg" : "90deg"}, var(--accent-dim) 0%, rgba(200,184,154,0.05) 100%)` }} />
+        <div className={`${s.connector} ${isAr ? s.connectorRtl : s.connectorLtr}`} />
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "clamp(1rem,3vw,2.5rem)" }}>
+        <div className={`${s.grid} ${isAr ? s.gridRtl : ""}`}>
           {tr.steps.map((step, i) => (
             <div key={step.num} style={{ position: "relative", paddingTop: "clamp(1.5rem,3vw,2.5rem)", textAlign: isAr ? "right" : "left" }}>
               {/* Node */}

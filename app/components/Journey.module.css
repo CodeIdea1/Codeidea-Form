@@ -61,6 +61,59 @@
   gap: clamp(1rem, 3vw, 2.5rem);
 }
 
+/* Connecting line */
+.connector {
+  position: absolute;
+  top: 0.6rem;
+  width: calc(100% - 1.2rem);
+  height: 1px;
+}
+
+.connectorLtr {
+  left: 0.6rem;
+  right: auto;
+  background: linear-gradient(90deg, var(--accent-dim) 0%, rgba(200, 184, 154, 0.05) 100%);
+}
+
+.connectorRtl {
+  right: 0.6rem;
+  left: auto;
+  background: linear-gradient(270deg, var(--accent-dim) 0%, rgba(200, 184, 154, 0.05) 100%);
+}
+
+/* Tablet: two columns */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(1.5rem, 4vw, 2.25rem) 2rem;
+  }
+  .connector { display: none; }
+}
+
+/* Mobile: single column with a vertical timeline */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    position: relative;
+  }
+
+  .grid::before {
+    content: "";
+    position: absolute;
+    top: 0.6rem;
+    bottom: 0.4rem;
+    left: 0.4rem;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent-dim) 0%, rgba(200, 184, 154, 0.06) 100%);
+  }
+
+  .gridRtl::before {
+    left: auto;
+    right: 0.4rem;
+  }
+}
+
 .step {
   position: relative;
   padding-top: clamp(1.5rem, 3vw, 2.5rem);

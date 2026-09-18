@@ -298,7 +298,6 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
   const hFont = isAr ? "var(--font-arabic)" : "var(--font-geist-sans)";
 
   const lapRef = useRef<HTMLDivElement>(null);
-  const lapTitleRef = useRef<HTMLParagraphElement>(null);
   const headlineSwitchRef = useRef<((next: number) => void) | null>(null);
 
   useEffect(() => {
@@ -329,14 +328,6 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
       const scale = 1 - p * 0.15;
       const x = p * -200;
       gsap.set(el, { scale, x, force3D: true, overwrite: "auto" });
-
-      // إظهار/إخفاء النص عند نهاية السكيل
-      const title = lapTitleRef.current;
-      if (title && p > 0.85) {
-        gsap.to(title, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" });
-      } else if (title && p <= 0.85) {
-        gsap.to(title, { autoAlpha: 0, y: 8, duration: 0.3, ease: "power2.in" });
-      }
     });
 
     return () => { gsap.killTweensOf(el); };
@@ -345,8 +336,7 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
   // lap.png animation setup
   useEffect(() => {
     const el = lapRef.current;
-    const title = lapTitleRef.current;
-    if (!el || !title) return;
+    if (!el) return;
 
     // In mobile: show immediately without animation
     if (isMobile) {
@@ -366,7 +356,6 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
       transformPerspective: 900,
       force3D: true,
     });
-    gsap.set(title, { autoAlpha: 0, y: 8 });
 
     const mountTween = gsap.to(el, {
       scale: 1,
@@ -423,26 +412,6 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
           }}
         >
           <Image src="/lappp.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
-          <p
-            ref={lapTitleRef}
-            style={{
-              position: "absolute",
-              top: "-2.5rem",
-              left: "35%",
-              transform: "translateX(-50%)",
-              margin: 0,
-              pointerEvents: "none",
-              whiteSpace: "nowrap",
-              fontFamily: hFont,
-              fontSize: "1rem",
-              fontWeight: 600,
-              color: "var(--accent)",
-              textAlign: "center",
-              textShadow: "0 2px 12px rgba(0, 0, 0, 0.5)",
-            }}
-          >
-            {isAr ? "ابدأ رحلتك" : "Start Your Journey"}
-          </p>
           {/* CenterHeadline inside lap so it moves with it */}
           {!isMobile && (
             <CenterHeadline lang={lang} hFont={hFont} switchRef={headlineSwitchRef} show={loaded} isMobile={false} scaleProgress={scaleProgress} insideLap />

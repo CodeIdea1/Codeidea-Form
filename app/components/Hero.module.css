@@ -299,7 +299,7 @@
 /* Desktop: use vw for responsive scaling */
 @media (min-width: 769px) {
   .mug {
-    left: 50vw !important;
+    left: 52vw !important;
     right: auto;
     width: 12vw !important;
     max-width: unset;
@@ -617,6 +617,7 @@
     padding: clamp(1rem, 5vw, 2rem);
     min-height: 100vh;
     height: auto;
+    background-image: none;
   }
 
   .textBlock {
@@ -685,7 +686,7 @@
 
   .mug {
     bottom: 5%;
-    right: 10%;
+    right: 6%;
     width: 150px;
     opacity: 1 !important;
     transform: translateY(0) !important;
@@ -809,7 +810,7 @@
   .mug {
     width: 120px;
     bottom: -10px;
-    right: -40px;
+    right: -52px;
   }
 
   .tree {
