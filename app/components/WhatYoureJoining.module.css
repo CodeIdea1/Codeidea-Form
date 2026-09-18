@@ -39,6 +39,22 @@
   align-items: start;
 }
 
+/* Mobile: stack into a single column */
+@media (max-width: 768px) {
+  .section {
+    padding: clamp(3rem, 10vw, 4rem) 1.25rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .disciplineRow {
+    padding: clamp(0.55rem, 1.2vw, 0.8rem) 0;
+  }
+}
+
 .headlineColumn {
 }
 

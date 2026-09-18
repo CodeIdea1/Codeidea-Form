@@ -39,6 +39,29 @@
   align-items: start;
 }
 
+/* Mobile: comfortable single-column layout */
+@media (max-width: 768px) {
+  .section {
+    padding: clamp(2.5rem, 8vw, 4rem) 1.25rem clamp(14rem, 42vw, 20rem);
+    justify-content: flex-start;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: clamp(1rem, 4vw, 2rem);
+  }
+
+  .form {
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  .submitButton {
+    width: 100%;
+    padding: 1.1rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
 .headlineColumn {
 }
 

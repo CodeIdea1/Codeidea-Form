@@ -66,10 +66,16 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     const loop = () => {
       const el = firstPanelRef.current;
       if (el) {
-        currentScaleRef.current += (targetScaleRef.current - currentScaleRef.current) * 0.18;
-        currentYAnimRef.current += (targetYRef.current    - currentYAnimRef.current)  * 0.18;
-        currentXAnimRef.current += (targetXRef.current    - currentXAnimRef.current)  * 0.18;
-        gsap.set(el, { scale: currentScaleRef.current, y: currentYAnimRef.current, x: currentXAnimRef.current });
+        const changed =
+          Math.abs(targetScaleRef.current - currentScaleRef.current) > 0.0005 ||
+          Math.abs(targetYRef.current - currentYAnimRef.current) > 0.05 ||
+          Math.abs(targetXRef.current - currentXAnimRef.current) > 0.05;
+        if (changed) {
+          currentScaleRef.current += (targetScaleRef.current - currentScaleRef.current) * 0.18;
+          currentYAnimRef.current += (targetYRef.current    - currentYAnimRef.current)  * 0.18;
+          currentXAnimRef.current += (targetXRef.current    - currentXAnimRef.current)  * 0.18;
+          gsap.set(el, { scale: currentScaleRef.current, y: currentYAnimRef.current, x: currentXAnimRef.current });
+        }
       }
       scaleRafRef.current = requestAnimationFrame(loop);
     };
@@ -101,6 +107,8 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
 
   useEffect(() => {
     if (isMobile) return;
+    let lastRenderedScroll = -1;
+    let firedLast = false;
     function animate() {
       const diff = targetScrollRef.current - scrollRef.current;
       if (Math.abs(diff) > 0.5) {
@@ -108,15 +116,22 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
       } else {
         scrollRef.current = targetScrollRef.current;
       }
-      // Direct DOM update instead of setState
-      if (trackRef.current) {
-        trackRef.current.style.transform = `translate3d(${-scrollRef.current}px, 0, 0)`;
+      if (Math.abs(scrollRef.current - lastRenderedScroll) > 0.5) {
+        lastRenderedScroll = scrollRef.current;
+        if (trackRef.current) {
+          trackRef.current.style.transform = `translate3d(${-scrollRef.current}px, 0, 0)`;
+        }
+        const maxScroll = (total - 1) * window.innerWidth;
+        const p = maxScroll > 0 ? scrollRef.current / maxScroll : 0;
+        progressRef.current = p;
+        onHeroProgress?.(Math.min(1, scrollRef.current / window.innerWidth));
       }
-      const maxScroll = (total - 1) * window.innerWidth;
-      const p = maxScroll > 0 ? scrollRef.current / maxScroll : 0;
-      progressRef.current = p;
-      onHeroProgress?.(Math.min(1, scrollRef.current / window.innerWidth));
-      if (Math.abs(scrollRef.current - maxScroll) < 50) onScrollToLast();
+      const maxScrollNow = (total - 1) * window.innerWidth;
+      if (Math.abs(scrollRef.current - maxScrollNow) < 50) {
+        if (!firedLast) { firedLast = true; onScrollToLast(); }
+      } else {
+        firedLast = false;
+      }
       rafRef.current = requestAnimationFrame(animate);
     }
     rafRef.current = requestAnimationFrame(animate);
@@ -195,7 +210,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
             key={i}
             data-section={i === panels.length - 1 ? "form" : undefined}
             style={{ 
-              minHeight: '100vh',
+              minHeight: '100svh',
               width: '100%'
             }}
           >

@@ -28,7 +28,7 @@ export default function LangThemeBar({ lang, theme, onLang, onTheme }: Props) {
       {/* Logo */}
       <div className={`${s.logoWrap} ${isAr ? s.logoWrapAr : s.logoWrapEn}`}>
         <Image
-          src={isDark ? "/codeidea-logo-night.png" : "/codeidea-logo.png"}
+          src={isDark ? "/codeidea-logo-night.webp" : "/codeidea-logo.webp"}
           alt="Logo"
           width={180}
           height={80}

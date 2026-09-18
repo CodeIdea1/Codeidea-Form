@@ -5,8 +5,9 @@ import { Translations, Lang } from "../i18n";
 export default function SuccessState({ name, tr, lang }: { name: string; tr: Translations; lang: Lang }) {
   const [step, setStep] = useState(0);
   const isAr = lang === "ar";
-  const hFont = isAr ? "var(--font-arabic)" : "var(--font-geist-sans)";
+  const hFont = isAr ? "var(--font-arabic)" : "var(--font-heading)";
   const mFont = isAr ? "var(--font-arabic)" : "var(--font-geist-mono)";
+  const dFont = isAr ? "var(--font-arabic)" : "var(--font-body)";
 
   useEffect(() => {
     const timers = tr.miniJourney.map((_, i) => setTimeout(() => setStep(i + 1), 400 + i * 350));
@@ -31,20 +32,20 @@ export default function SuccessState({ name, tr, lang }: { name: string; tr: Tra
           </svg>
         </div>
 
-        <h1 style={{ fontFamily: hFont, fontSize: "clamp(3rem,10vw,8rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.2 : 0.92, color: "var(--fg)", marginBottom: "clamp(1rem,3vw,2rem)", animation: "fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both" }}>
+        <h1 style={{ fontFamily: hFont, fontSize: "clamp(2.9rem,8.7vw,6.8rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.2 : 0.92, color: "var(--fg)", marginBottom: "clamp(1rem,3vw,2rem)", animation: "fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both" }}>
           {tr.successTitle}{name ? "،" : "."}
           {name && <span style={{ color: "var(--accent)", display: "block" }}>{name}.</span>}
         </h1>
 
-        <p style={{ fontFamily: hFont, fontSize: isAr ? "clamp(1rem,2.2vw,1.3rem)" : "clamp(0.95rem,2vw,1.2rem)", color: "var(--fg-dim)", fontWeight: isAr ? 400 : 300, lineHeight: isAr ? 1.9 : 1.7, maxWidth: "460px", marginBottom: "clamp(2.5rem,6vw,5rem)", animation: "fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both", marginLeft: isAr ? "auto" : 0 }}>
+        <p style={{ fontFamily: dFont, fontSize: isAr ? "clamp(1rem,2.2vw,1.3rem)" : "clamp(1rem,2.1vw,1.3rem)", color: "var(--fg-dim)", fontWeight: isAr ? 400 : 300, lineHeight: isAr ? 1.9 : 1.7, maxWidth: "460px", marginBottom: "clamp(2.5rem,6vw,5rem)", animation: "fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both", marginLeft: isAr ? "auto" : 0 }}>
           {tr.successSub.split("\n").map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", animation: "fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.6s both" }}>
           {tr.miniJourney.map((item, i) => (
-            <div key={item.status} style={{ display: "flex", alignItems: "center", gap: "clamp(1rem,3vw,2rem)", padding: "clamp(0.75rem,1.5vw,1rem) 0", borderBottom: i < tr.miniJourney.length - 1 ? "1px solid var(--line)" : "none", opacity: step > i ? 1 : 0.2, transition: "opacity 0.5s ease", flexDirection: isAr ? "row-reverse" : "row" }}>
-              <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.55rem", letterSpacing: isAr ? "0" : "0.2em", color: item.done ? "var(--accent)" : "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase", minWidth: isAr ? "4rem" : "3.5rem", textAlign: isAr ? "right" : "left" }}>{item.status}</span>
-              <span style={{ fontFamily: mFont, fontSize: isAr ? "0.9rem" : "0.6rem", letterSpacing: isAr ? "0" : "0.1em", color: item.done ? "var(--fg)" : "var(--fg-dim)", textTransform: isAr ? "none" : "uppercase" }}>
+            <div key={item.status} style={{ display: "flex", alignItems: "center", gap: "clamp(1rem,3vw,2rem)", padding: "clamp(0.6rem,1.2vw,0.85rem) 0", borderBottom: i < tr.miniJourney.length - 1 ? "1px solid var(--line)" : "none", opacity: step > i ? 1 : 0.2, transition: "opacity 0.5s ease", flexDirection: isAr ? "row-reverse" : "row" }}>
+              <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.7rem", letterSpacing: isAr ? "0" : "0.15em", color: item.done ? "var(--accent)" : "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase", minWidth: isAr ? "4rem" : "3.5rem", textAlign: isAr ? "right" : "left" }}>{item.status}</span>
+              <span style={{ fontFamily: mFont, fontSize: isAr ? "0.9rem" : "0.75rem", letterSpacing: isAr ? "0" : "0.1em", color: item.done ? "var(--fg)" : "var(--fg-dim)", textTransform: isAr ? "none" : "uppercase" }}>
                 {item.done ? "✓ " : "← "}{item.label}
               </span>
             </div>

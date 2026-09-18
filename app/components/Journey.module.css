@@ -92,9 +92,13 @@
 
 /* Mobile: single column with a vertical timeline */
 @media (max-width: 640px) {
+  .section {
+    padding: clamp(3rem, 7vw, 5rem) 1.25rem;
+  }
+
   .grid {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
+    gap: 1.25rem;
     position: relative;
   }
 
@@ -111,6 +115,20 @@
   .gridRtl::before {
     left: auto;
     right: 0.4rem;
+  }
+
+  /* Indent step content so the vertical line never overlaps the text */
+  .step {
+    padding-left: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  .gridRtl .step {
+    padding-left: 0;
+    padding-right: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  .step {
+    padding-top: 1.2rem;
   }
 }
 

@@ -20,7 +20,7 @@ function LapParticles() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     const w = canvas.offsetWidth, h = canvas.offsetHeight;
-    const count = 80;
+    const count = Math.min(36, Math.max(18, Math.floor(w / 12)));
     type R = { x: number; y: number; baseX: number; baseY: number; size: number; speed: number; opacity: number; angle: number };
 
     const rising: R[] = Array.from({ length: count }, () => {
@@ -30,6 +30,7 @@ function LapParticles() {
 
     let raf: number;
     let lastTime = 0;
+    let visible = true;
 
     function getColor() {
       const isDark = document.documentElement.classList.contains("dark") || !document.documentElement.classList.contains("light");
@@ -37,7 +38,8 @@ function LapParticles() {
     }
 
     function loop(t: number) {
-      if (t - lastTime < 33) { raf = requestAnimationFrame(loop); return; }
+      if (!visible) return;
+      if (t - lastTime < 50) { raf = requestAnimationFrame(loop); return; }
       lastTime = t;
       ctx!.clearRect(0, 0, w, h);
       const { r, g, b } = getColor();
@@ -55,8 +57,18 @@ function LapParticles() {
       raf = requestAnimationFrame(loop);
     }
 
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry?.isIntersecting ?? true;
+      if (visible) { lastTime = 0; raf = requestAnimationFrame(loop); }
+      else if (raf) cancelAnimationFrame(raf);
+    }, { threshold: 0 });
+
     raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    observer.observe(canvas);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -80,10 +92,9 @@ const PHRASES = {
   ],
 };
 
-function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressRef, insideLap }: {
+function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideLap }: {
   lang: Lang;
   hFont: string;
-  switchRef?: React.MutableRefObject<((next: number) => void) | null>;
   show?: boolean;
   isMobile?: boolean;
   scaleProgressRef?: React.MutableRefObject<number>;
@@ -158,18 +169,6 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
     return () => clearInterval(interval);
   }, [isDesktop, show, scaleProgressRef]);
 
-  // Auto-rotate phrases on mobile only
-  useEffect(() => {
-    if (isDesktop || !show) return;
-    
-    const interval = setInterval(() => {
-      const nextIdx = (currentIdx.current + 1) % phrases.length;
-      switchTo(nextIdx);
-    }, 2200);
-
-    return () => clearInterval(interval);
-  }, [isDesktop, show, phrases.length]);
-
   const switchTo = (next: number) => {
     if (animatingRef.current || next === currentIdx.current) return;
     const top = topRef.current;
@@ -213,9 +212,17 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
     });
   };
 
+  // Auto-rotate phrases on mobile only
   useEffect(() => {
-    if (switchRef) switchRef.current = switchTo;
-  });
+    if (isDesktop || !show) return;
+    
+    const interval = setInterval(() => {
+      const nextIdx = (currentIdx.current + 1) % phrases.length;
+      switchTo(nextIdx);
+    }, 2200);
+
+    return () => clearInterval(interval);
+  }, [isDesktop, show, phrases.length]);
 
   useEffect(() => {
     return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); };
@@ -256,7 +263,7 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
         style={{
           display: "block",
           fontFamily: hFont,
-          fontSize: isMobile ? "5.5vw" : "2.5vw",
+          fontSize: isMobile ? "5.8vw" : "2.6vw",
           fontWeight: 700,
           color: "var(--fg)",
           letterSpacing: "-0.04em",
@@ -271,7 +278,7 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
         style={{
           display: "block",
           fontFamily: hFont,
-          fontSize: isMobile ? "5.5vw" : "2.5vw",
+          fontSize: isMobile ? "5.8vw" : "2.6vw",
           fontWeight: 700,
           color: "var(--accent)",
           letterSpacing: "-0.04em",
@@ -296,10 +303,64 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const isAr = lang === "ar";
-  const hFont = isAr ? "var(--font-arabic)" : "var(--font-geist-sans)";
+  const hFont = isAr ? "var(--font-arabic)" : "var(--font-heading)";
 
   const lapRef = useRef<HTMLDivElement>(null);
-  const headlineSwitchRef = useRef<((next: number) => void) | null>(null);
+  const tipAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [mugTipOpen, setMugTipOpen] = useState(false);
+  const [mugTipEverOpen, setMugTipEverOpen] = useState(false);
+  const mugTipHideTimerRef = useRef<number | null>(null);
+  const mugTipAudioTimerRef = useRef<number | null>(null);
+  const MUG_TIP_SOUND = "/mug-hover2.wav";
+  const MUG_TIP_VISIBLE_MS = 6000;
+  const MUG_TIP_SOUND_DELAY_MS = 70;
+
+  const startMugTipSound = () => {
+    if (tipAudioRef.current) {
+      tipAudioRef.current.currentTime = 0;
+      tipAudioRef.current.play().catch(() => {});
+      return;
+    }
+    const audio = new Audio(MUG_TIP_SOUND);
+    audio.preload = "auto";
+    audio.volume = 0.85;
+    audio.onerror = () => { tipAudioRef.current = null; };
+    tipAudioRef.current = audio;
+    audio.play().catch(() => { tipAudioRef.current = null; });
+  };
+
+  const playMugTipSound = () => {
+    setMugTipOpen((open) => {
+      if (open) {
+        if (mugTipHideTimerRef.current) window.clearTimeout(mugTipHideTimerRef.current);
+        if (mugTipAudioTimerRef.current) window.clearTimeout(mugTipAudioTimerRef.current);
+        mugTipHideTimerRef.current = null;
+        mugTipAudioTimerRef.current = null;
+        return !open;
+      }
+      // Delay the sound slightly so it lands in sync with the pop-in animation
+      if (mugTipAudioTimerRef.current) window.clearTimeout(mugTipAudioTimerRef.current);
+      mugTipAudioTimerRef.current = window.setTimeout(startMugTipSound, MUG_TIP_SOUND_DELAY_MS);
+      setMugTipEverOpen(true);
+      // Auto-hide the tip after a few seconds
+      mugTipHideTimerRef.current = window.setTimeout(
+        () => setMugTipOpen(false),
+        MUG_TIP_VISIBLE_MS
+      );
+      return !open;
+    });
+  };
+
+  useEffect(() => {
+    return () => {
+      if (mugTipHideTimerRef.current) window.clearTimeout(mugTipHideTimerRef.current);
+      if (mugTipAudioTimerRef.current) window.clearTimeout(mugTipAudioTimerRef.current);
+      if (tipAudioRef.current) {
+        tipAudioRef.current.pause();
+        tipAudioRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 80);
@@ -379,20 +440,20 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
         {/* Hero main image */}
         <div className={`${s.heroImg} ${s.heroImgEn} ${loaded ? s.heroImgLoaded : s.heroImgHidden}`} style={{ pointerEvents: 'none' }}>
           <Image 
-            src="/saja.png"
+            src="/saja.webp"
             alt="Hero" 
             fill 
             priority 
             style={{ objectFit: "contain", objectPosition: "bottom" }} 
           />
           <div className={`${s.heroHair} ${s.hairMain}`}>
-            <Image src="/main-hair.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/main-hair.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
           <div className={`${s.heroHair} ${s.hair2El}`}>
-            <Image src="/hair2.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/hair2.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
           <div className={`${s.heroHair} ${s.hair3El}`}>
-            <Image src="/hair-33.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/hair-33.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
         </div>
 
@@ -404,54 +465,55 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
           onMouseEnter={() => {
             if (isMobile) return;
             onHoverChange?.(true);
-            headlineSwitchRef.current?.(1);
           }}
           onMouseLeave={() => {
             if (isMobile) return;
             onHoverChange?.(false);
-            headlineSwitchRef.current?.(0);
           }}
         >
-          <Image src="/lappp.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+          <Image src="/lappp.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           {/* CenterHeadline inside lap so it moves with it */}
           {!isMobile && (
-            <CenterHeadline lang={lang} hFont={hFont} switchRef={headlineSwitchRef} show={loaded} isMobile={false} scaleProgressRef={scaleProgressRef} insideLap />
+            <CenterHeadline lang={lang} hFont={hFont} show={loaded} isMobile={false} scaleProgressRef={scaleProgressRef} insideLap />
           )}
         </div>
 
         {/* mug.png */}
-        <div className={`${s.mug} ${loaded ? s.mugLoaded : s.mugHidden}`} style={{ pointerEvents: 'auto' }}>
+        <div className={`${s.mug} ${loaded ? s.mugLoaded : s.mugHidden}`} style={{ pointerEvents: 'auto' }} onMouseDown={playMugTipSound}>
           <div className={`${s.steamContainer} ${loaded ? s.steamVisible : s.steamHidden}`} aria-hidden="true">
             <span className={`${s.steamBlob} ${s.steam1}`} />
             <span className={`${s.steamBlob} ${s.steam2}`} />
             <span className={`${s.steamBlob} ${s.steam3}`} />
             <span className={`${s.steamBlob} ${s.steam4}`} />
           </div>
-          <Image src="/mug2.png" alt="Mug" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
-          <div className={s.mugTip} role="tooltip" style={{ fontFamily: hFont }}>
+          <Image src="/mug2.webp" alt="Mug" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+          <div className={s.mugTip} role="tooltip" style={{ fontFamily: hFont }} data-open={mugTipOpen} data-closed-anim={mugTipEverOpen && !mugTipOpen}>
             <span className={s.mugTipStem} aria-hidden="true" />
             <span className={s.mugTipIcon} aria-hidden="true">☕</span>
             <span className={s.mugTipText}>{tr.mugTip}</span>
           </div>
         </div>
 
+        {/* Floating particles above the lap */}
+        <LapParticles />
+
         {/* tree */}
         <div className={`${s.tree} ${loaded ? s.treeLoaded : s.treeHidden}`}>
-          <Image src="/main-tree.png" alt="" fill style={{ objectFit: "contain", objectPosition: "bottom left", pointerEvents: "none" }} />
+          <Image src="/main-tree.webp" alt="" fill style={{ objectFit: "contain", objectPosition: "bottom left", pointerEvents: "none" }} />
           <div className={s.treeLeaf}>
-            <Image src="/a-leaf2.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/a-leaf2.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
           <div className={`${s.treeLeaf} ${s.leaf2}`}>
-            <Image src="/a-leaf-2.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/a-leaf-2.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
           <div className={`${s.treeLeaf} ${s.leaf3}`}>
-            <Image src="/a-leaf-3.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/a-leaf-3.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
           <div className={`${s.treeLeaf} ${s.leaf4}`}>
-            <Image src="/a-leaf-4.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/a-leaf-4.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
           <div className={`${s.treeLeaf} ${s.leafBig}`}>
-            <Image src="/a-leaf.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+            <Image src="/a-leaf.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           </div>
         </div>
 
@@ -467,7 +529,6 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
         dir="ltr"
         className={`${s.section} ${s.sectionEn}`}
       >
-      <LapParticles />
 
       {/* Text */}
       <div className={`${s.textBlock} ${s.textBlockEn}`}>

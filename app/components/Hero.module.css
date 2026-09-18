@@ -9,17 +9,11 @@
   padding: clamp(2rem, 8vw, 7rem) clamp(1.5rem, 8vw, 7rem);
   overflow: hidden;
   transform-origin: 50% 50%;
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  background-image: url("/back-sec1.png");
+  background-image: url("/back-sec1.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   zoom: 1 !important; /* Force zoom to be 1 */
-  transform-style: flat; /* Prevent 3D transforms from affecting children */
 }.imagesContainer > * {
   pointer-events: auto; /* Re-enable pointer events for children */
 }
@@ -340,14 +334,11 @@
   box-shadow:
     0 20px 42px rgba(0, 0, 0, 0.32),
     0 0 26px color-mix(in srgb, var(--accent) 20%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   opacity: 0;
-  transform: translateX(-26px) rotateY(55deg) scale(0.7);
-  transform-origin: 100% 50%;
+  transform: translateY(12px) translateX(6px) scale(0.92);
+  transform-origin: 0% 100%;
   pointer-events: none;
   z-index: 14;
-  transition: opacity 0.35s ease 0.1s, transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
 }
 .mugTip::before {
   content: "✨";
@@ -386,9 +377,34 @@
 .mugTipText {
   display: inline-block;
 }
-.mug:hover .mugTip {
-  opacity: 1;
-  transform: translateX(0) rotateY(0) scale(1);
+.mugTip[data-open="true"] {
+  animation: tipIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.mugTip[data-open="false"][data-closed-anim="true"] {
+  animation: tipOut 0.28s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes tipIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) translateX(6px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+}
+
+@keyframes tipOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(8px) translateX(-5px) scale(0.95);
+  }
 }
 
 @keyframes tipCoffee {
@@ -468,7 +484,6 @@
   width: clamp(400px, 42vw, 760px);
   aspect-ratio: 1808 / 870;
   z-index: 4;
-  filter: blur(3.5px);
   pointer-events: none;
   will-change: transform, opacity;
 }
@@ -697,6 +712,7 @@
     opacity: 1 !important; /* Remove transparency */
     left: auto;
     right: 5%; /* Move more to the left */
+    filter: blur(3.5px);
   }
 
   .scrollHint {

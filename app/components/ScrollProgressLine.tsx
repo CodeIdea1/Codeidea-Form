@@ -11,10 +11,13 @@ export default function ScrollProgressLine({ progressRef }: { progressRef: React
     function update() {
       const p = progressRef.current;
       const pct = `${p * 100}%`;
-      if (fillRef.current) fillRef.current.style.width = pct;
+      if (fillRef.current && fillRef.current.style.width !== pct) {
+        fillRef.current.style.width = pct;
+      }
       if (dotRef.current) {
-        dotRef.current.style.left = pct;
-        dotRef.current.style.opacity = p > 0.005 && p < 0.995 ? "1" : "0";
+        const opacity = p > 0.005 && p < 0.995 ? "1" : "0";
+        if (dotRef.current.style.left !== pct) dotRef.current.style.left = pct;
+        if (dotRef.current.style.opacity !== opacity) dotRef.current.style.opacity = opacity;
       }
       raf = requestAnimationFrame(update);
     }
