@@ -32,7 +32,7 @@ export default function SuccessState({ name, tr, lang }: { name: string; tr: Tra
           </svg>
         </div>
 
-        <h1 style={{ fontFamily: hFont, fontSize: "clamp(2.9rem,8.7vw,6.8rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.2 : 0.92, color: "var(--fg)", marginBottom: "clamp(1rem,3vw,2rem)", animation: "fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both" }}>
+        <h1 style={{ fontFamily: hFont, fontSize: "clamp(2.2rem,7vw,5.2rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.2 : 0.92, color: "var(--fg)", marginBottom: "clamp(1rem,3vw,2rem)", animation: "fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both" }}>
           {tr.successTitle}{name ? "،" : "."}
           {name && <span style={{ color: "var(--accent)", display: "block" }}>{name}.</span>}
         </h1>

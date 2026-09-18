@@ -46,6 +46,8 @@ export default function WhatYoureJoining({ tr, lang }: { tr: Translations; lang:
           ))}
         </div>
       </div>
+
+      <div style={{ position: "absolute", left: isAr ? "clamp(1.5rem,8vw,7rem)" : "auto", right: isAr ? "auto" : "clamp(1.5rem,8vw,7rem)", bottom: "clamp(2rem,6vw,5rem)", fontFamily: "var(--font-geist-mono)", fontSize: "clamp(6rem,18vw,16rem)", fontWeight: 700, color: "var(--ghost-num)", letterSpacing: "-0.05em", userSelect: "none", pointerEvents: "none", lineHeight: 1 }}>04</div>
     </section>
   );
 }
