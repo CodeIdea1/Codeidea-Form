@@ -18,7 +18,10 @@ export default function Page() {
   const [submitted, setSubmitted] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
   const [scrollKey, setScrollKey] = useState(0);
+  const scaleProgressRef = useRef(0);
   const heroProgressCbRef = useRef<((p: number) => void) | null>(null);
+  // Setter provided by HorizontalScroll to enable the scroll-driven scale on the first panel
+  const hoverSetterRef = useRef<((v: boolean) => void) | null>(null);
 
   const tr = t[lang];
 
@@ -63,6 +66,10 @@ export default function Page() {
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("scroll", onScroll, { capture: true });
     };
+  }, []);
+
+  const handleScaleProgress = useCallback((p: number) => {
+    scaleProgressRef.current = p;
   }, []);
 
   const handleSuccess = useCallback((name: string) => {
@@ -112,6 +119,7 @@ export default function Page() {
     <Hero key="hero" onCTA={handleCTAClick} tr={tr} lang={lang}
       theme={theme}
       registerProgress={cb => { heroProgressCbRef.current = cb; }}
+      onHoverChange={v => hoverSetterRef.current?.(v)}
     />,
     ...staticSections,
   ];
@@ -120,7 +128,8 @@ export default function Page() {
     <>
       <ParticlesBackground />
       <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} solid={barSolid} />
-      <HorizontalScroll key={scrollKey} onScrollToLast={() => {}} onHeroProgress={handleHeroProgress} lang={lang}
+      <HorizontalScroll key={scrollKey} onScrollToLast={() => {}} onHeroProgress={handleHeroProgress} onScaleProgress={handleScaleProgress} lang={lang}
+        registerHoverControl={setter => { hoverSetterRef.current = setter; }}
         registerScrollToForm={scrollFn => { scrollToFormRef.current = scrollFn; }}
       >
         {sections}

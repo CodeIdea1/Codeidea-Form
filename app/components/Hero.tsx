@@ -246,12 +246,13 @@ function ShootingStar() {
   );
 }
 
-export default function Hero({ onCTA, tr, lang, theme, registerProgress }: {
+export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHoverChange }: {
   onCTA: () => void;
   tr: Translations;
   lang: Lang;
   theme: "dark" | "light";
   registerProgress?: (cb: (p: number) => void) => void;
+  onHoverChange?: (hovered: boolean) => void;
 }) {
   const [loaded, setLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -418,15 +419,11 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress }: {
           style={{ pointerEvents: isMobile ? 'none' : 'auto' }}
           onMouseEnter={() => {
             if (isMobile) return;
-            const el = lapRef.current;
-            if (!el) return;
-            gsap.to(el, { scale: 1.6, y: -20, duration: 0.7, ease: "power3.out", overwrite: "auto" });
+            onHoverChange?.(true);
           }}
           onMouseLeave={() => {
             if (isMobile) return;
-            const el = lapRef.current;
-            if (!el) return;
-            gsap.to(el, { scale: 1, y: 0, duration: 0.7, ease: "power3.out", overwrite: "auto" });
+            onHoverChange?.(false);
           }}
         >
           <Image src="/laptop.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
