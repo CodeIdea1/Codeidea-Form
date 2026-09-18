@@ -121,8 +121,8 @@
 
 /* Bring the logo a bit further left on desktop */
 @media (min-width: 769px) {
-  .logoWrapEn { left: 1rem; right: auto; }
-  .logoWrapAr { right: 1rem; left: auto; }
+  .logoWrapEn { left: clamp(1.25rem, 5vw, 4rem); right: auto; }
+  .logoWrapAr { right: clamp(1.25rem, 5vw, 4rem); left: auto; }
 }
 
 .btn {
