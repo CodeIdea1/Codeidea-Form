@@ -170,10 +170,10 @@
   transform: translateY(-12vh);
 }
 .textBlockEn { 
-  text-align: right;
+  text-align: left;
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* All items aligned to the right */
+  align-items: flex-start; /* All items aligned to the left */
 }
 .textBlockAr { 
   text-align: left;
