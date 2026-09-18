@@ -494,7 +494,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
             style={{ fontFamily: hFont }}
           >
             {tr.line1.map((w, i) => (
-              <span key={i} className={s.wordEn}>{w}</span>
+              <span key={i} className={`${s.wordEn} ${lang === "ar" && i > 0 ? s.colorAccent : ""}`}>{w}</span>
             ))}
           </h1>
         </div>
