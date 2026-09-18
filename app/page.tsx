@@ -53,6 +53,13 @@ export default function Page() {
     setScrollKey(prev => prev + 1);
   }
 
+  // Function to scroll to the last section (form)
+  const scrollToFormRef = useRef<(() => void) | null>(null);
+
+  const handleCTAClick = useCallback(() => {
+    scrollToFormRef.current?.();
+  }, []);
+
   if (submitted) {
     return (
       <>
@@ -62,13 +69,6 @@ export default function Page() {
       </>
     );
   }
-
-  // Function to scroll to the last section (form)
-  const scrollToFormRef = useRef<(() => void) | null>(null);
-
-  const handleCTAClick = useCallback(() => {
-    scrollToFormRef.current?.();
-  }, []);
 
   const sections = [
     <Hero key="hero" onCTA={handleCTAClick} tr={tr} lang={lang}
