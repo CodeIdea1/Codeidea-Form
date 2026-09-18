@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback, startTransition } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, startTransition } from "react";
 import { Lang, t } from "./i18n";
 import LangThemeBar from "./components/LangThemeBar";
 import ParticlesBackground from "./components/ParticlesBackground";
@@ -33,6 +33,14 @@ export default function Page() {
     html.setAttribute("lang", lang);
   }, [theme, lang, tr.dir]);
 
+  // Preload theme-sensitive images so toggling dark <-> light is instant (no fetch/flash)
+  useEffect(() => {
+    ["/back-sec1.webp", "/back-sec2-white.webp", "/mug2.webp", "/mug-white.png"].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const handleHeroProgress = useCallback((p: number) => {
     heroProgressCbRef.current?.(p);
   }, []);
@@ -41,17 +49,22 @@ export default function Page() {
     scaleProgressRef.current = p;
   }, []);
 
-  function handleSuccess(name: string) {
+  const handleSuccess = useCallback((name: string) => {
     startTransition(() => {
       setSubmittedName(name);
       setSubmitted(true);
     });
-  }
+  }, []);
 
-  function handleLangChange(newLang: Lang) {
+  const handleLangChange = useCallback((newLang: Lang) => {
     setLang(newLang);
     setScrollKey(prev => prev + 1);
-  }
+  }, []);
+
+  const handleThemeChange = useCallback(() => {
+    // Non-urgent: keeps the UI responsive during the theme repaint
+    startTransition(() => setTheme(p => (p === "dark" ? "light" : "dark")));
+  }, []);
 
   // Function to scroll to the last section (form)
   const scrollToFormRef = useRef<(() => void) | null>(null);
@@ -60,11 +73,20 @@ export default function Page() {
     scrollToFormRef.current?.();
   }, []);
 
+  // Theme-independent sections: stable references so toggling theme doesn't re-render them
+  const staticSections = useMemo(() => [
+    <TheQuestion key="q" tr={tr} lang={lang} />,
+    <TheAnswer key="a" tr={tr} lang={lang} />,
+    <Journey key="j" tr={tr} lang={lang} />,
+    <WhatYoureJoining key="w" tr={tr} lang={lang} />,
+    <EarlyAccessForm key="f" onSuccess={handleSuccess} tr={tr} lang={lang} />,
+  ], [tr, lang, handleSuccess]);
+
   if (submitted) {
     return (
       <>
         <ParticlesBackground />
-        <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={() => setTheme(p => p === "dark" ? "light" : "dark")} />
+        <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} />
         <SuccessState name={submittedName} tr={tr} lang={lang} />
       </>
     );
@@ -77,17 +99,13 @@ export default function Page() {
       onHoverChange={v => hoverSetterRef.current?.(v)}
       scaleProgressRef={scaleProgressRef}
     />,
-    <TheQuestion key="q" tr={tr} lang={lang} />,
-    <TheAnswer key="a" tr={tr} lang={lang} />,
-    <Journey key="j" tr={tr} lang={lang} />,
-    <WhatYoureJoining key="w" tr={tr} lang={lang} />,
-    <EarlyAccessForm key="f" onSuccess={handleSuccess} tr={tr} lang={lang} />,
+    ...staticSections,
   ];
 
   return (
     <>
       <ParticlesBackground />
-      <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={() => setTheme(p => p === "dark" ? "light" : "dark")} />
+      <LangThemeBar lang={lang} theme={theme} onLang={handleLangChange} onTheme={handleThemeChange} />
       <HorizontalScroll key={scrollKey} onScrollToLast={() => {}} onHeroProgress={handleHeroProgress} onScaleProgress={handleScaleProgress} lang={lang}
         registerHoverControl={setter => { hoverSetterRef.current = setter; }}
         registerScrollToForm={scrollFn => { scrollToFormRef.current = scrollFn; }}
