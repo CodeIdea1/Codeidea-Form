@@ -21,9 +21,9 @@ interface Props {
 }
 
 export default function HorizontalScroll({ children, onScrollToLast, onHeroProgress, onScaleProgress, lang, resetTrigger, registerHoverControl, registerScrollToForm }: Props) {
-  const [scrollX, setScrollX] = useState(0);
-  const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const progressRef = useRef<number>(0);
 
   const scrollRef = useRef(0);
   const targetScrollRef = useRef(0);
@@ -88,8 +88,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     scrollRef.current = 0;
     targetScrollRef.current = 0;
     scaleScrollAccRef.current = 0;
-    setScrollX(0);
-    setProgress(0);
+    if (trackRef.current) trackRef.current.style.transform = `translate3d(0px, 0, 0)`;
     if (firstPanelRef.current) gsap.set(firstPanelRef.current, { scale: 1, y: 0 });
   }, [resetTrigger]);
 
@@ -105,15 +104,17 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     function animate() {
       const diff = targetScrollRef.current - scrollRef.current;
       if (Math.abs(diff) > 0.5) {
-        // تسريع الانتقال من 0.08 إلى 0.12 لسلاسة أكبر
         scrollRef.current += diff * 0.12;
       } else {
         scrollRef.current = targetScrollRef.current;
       }
-      setScrollX(scrollRef.current);
+      // Direct DOM update instead of setState
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translate3d(${-scrollRef.current}px, 0, 0)`;
+      }
       const maxScroll = (total - 1) * window.innerWidth;
       const p = maxScroll > 0 ? scrollRef.current / maxScroll : 0;
-      setProgress(p);
+      progressRef.current = p;
       onHeroProgress?.(Math.min(1, scrollRef.current / window.innerWidth));
       if (Math.abs(scrollRef.current - maxScroll) < 50) onScrollToLast();
       rafRef.current = requestAnimationFrame(animate);
@@ -188,7 +189,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
   if (isMobile) {
     return (
       <div className={s.mobileWrapper}>
-        <ScrollProgressLine progress={progress} />
+        <ScrollProgressLine progressRef={progressRef} />
         {panels.map((child, i) => (
           <div 
             key={i}
@@ -207,11 +208,12 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
 
   return (
     <>
-      <ScrollProgressLine progress={progress} />
+      <ScrollProgressLine progressRef={progressRef} />
       <div
         dir="ltr"
+        ref={trackRef}
         className={s.track}
-        style={{ width: `${total * 100}vw`, transform: `translate3d(${-scrollX}px, 0, 0)` }}
+        style={{ width: `${total * 100}vw` }}
       >
         {panels.map((child, i) => (
           <div

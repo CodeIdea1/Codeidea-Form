@@ -2,24 +2,30 @@
 import { useEffect, useRef } from "react";
 import s from "./ScrollProgressLine.module.css";
 
-export default function ScrollProgressLine({ progress }: { progress: number }) {
+export default function ScrollProgressLine({ progressRef }: { progressRef: React.MutableRefObject<number> }) {
   const fillRef = useRef<HTMLDivElement>(null);
   const dotRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const pct = `${progress * 100}%`;
-    if (fillRef.current) fillRef.current.style.width = pct;
-    if (dotRef.current)  dotRef.current.style.left   = pct;
-  }, [progress]);
+    let raf: number;
+    function update() {
+      const p = progressRef.current;
+      const pct = `${p * 100}%`;
+      if (fillRef.current) fillRef.current.style.width = pct;
+      if (dotRef.current) {
+        dotRef.current.style.left = pct;
+        dotRef.current.style.opacity = p > 0.005 && p < 0.995 ? "1" : "0";
+      }
+      raf = requestAnimationFrame(update);
+    }
+    raf = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(raf);
+  }, [progressRef]);
 
   return (
     <div className={s.track}>
       <div ref={fillRef} className={s.fill} />
-      <div
-        ref={dotRef}
-        className={s.dot}
-        style={{ opacity: progress > 0.005 && progress < 0.995 ? 1 : 0 }}
-      />
+      <div ref={dotRef} className={s.dot} />
     </div>
   );
 }
