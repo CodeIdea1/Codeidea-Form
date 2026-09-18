@@ -30,6 +30,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
   const rafRef = useRef<number | null>(null);
 
   const isImageHoveredRef = useRef(false);
+  const lastFlipRef = useRef(0);
   const scaleScrollAccRef = useRef(0);
   const firstPanelRef = useRef<HTMLDivElement | null>(null);
   const targetScaleRef = useRef(1);
@@ -151,14 +152,17 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
         onScaleProgress?.(p);
         return;
       }
-      // Already gliding toward a panel: ignore further ticks until it settles (snap once per scroll)
-      if (Math.abs(targetScrollRef.current - scrollRef.current) > 2) return;
-      const maxScroll = (total - 1) * window.innerWidth;
-      const cur = Math.round(scrollRef.current / window.innerWidth);
-      let next = cur;
-      if (e.deltaY > 0) next = Math.min(total - 1, cur + 1);
-      else if (e.deltaY < 0) next = Math.max(0, cur - 1);
-      targetScrollRef.current = next * window.innerWidth;
+      // Max one section per scroll gesture: ignore while gliding or within the debounce window
+      const now = Date.now();
+      if (Math.abs(targetScrollRef.current - scrollRef.current) <= 2 && now - lastFlipRef.current >= 700) {
+        const maxScroll = (total - 1) * window.innerWidth;
+        const cur = Math.round(scrollRef.current / window.innerWidth);
+        let next = cur;
+        if (e.deltaY > 0) next = Math.min(total - 1, cur + 1);
+        else if (e.deltaY < 0) next = Math.max(0, cur - 1);
+        targetScrollRef.current = next * window.innerWidth;
+        lastFlipRef.current = now;
+      }
     }
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
