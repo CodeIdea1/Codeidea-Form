@@ -10,8 +10,8 @@ export const t = {
     earlyAccess: "Early Access",
     firstCohortLimited: "First Cohort · Limited",
 
-    line1: ["FROM", "LEARNING", "CODE"],
-    line2: ["TO CREATING", "EXPERIENCES."],
+    line1: ["LEARN", "TO", "BUILD"],
+    line2: ["WHAT YOU ADMIRE."],
     heroSub: "The animation, interaction and web experiences you've been asking us to teach — we're finally opening the doors.",
     joinCTA: "Join Early Access →",
     mugTip: "Grab a coffee, let's create ✨",
