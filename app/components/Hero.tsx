@@ -80,13 +80,13 @@ const PHRASES = {
   ],
 };
 
-function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgress, insideLap }: {
+function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressRef, insideLap }: {
   lang: Lang;
   hFont: string;
   switchRef?: React.MutableRefObject<((next: number) => void) | null>;
   show?: boolean;
   isMobile?: boolean;
-  scaleProgress?: number;
+  scaleProgressRef?: React.MutableRefObject<number>;
   insideLap?: boolean;
 }) {
   const phrases = PHRASES[lang];
@@ -120,42 +120,43 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgress,
     );
   }, [show]);
 
-  // Desktop: switch phrase with scaleProgress - debounced to avoid rapid changes on fast scroll
+  // Desktop: switch phrase with scaleProgress - poll ref via interval
   const lastDesktopIdx = useRef(-1);
   const pendingIdxRef = useRef(-1);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isDesktop || !show) return;
-    const p = scaleProgress ?? 0;
-    const next = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
-    if (next === lastDesktopIdx.current) return;
-
-    pendingIdxRef.current = next;
-
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => {
-      const target = pendingIdxRef.current;
-      if (target === lastDesktopIdx.current) return;
-      lastDesktopIdx.current = target;
-      const top = topRef.current;
-      const bot = botRef.current;
-      if (!top || !bot) return;
-      gsap.killTweensOf([top, bot]);
-      gsap.to([top, bot], {
-        opacity: 0, y: -15, filter: 'blur(8px)',
-        duration: 0.35, ease: 'power2.in', stagger: 0.06,
-        onComplete: () => {
-          currentIdx.current = target;
-          setIdx(target);
-          gsap.fromTo([top, bot],
-            { opacity: 0, y: 18, filter: 'blur(8px)' },
-            { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, ease: 'power3.out', stagger: 0.1, overwrite: true }
-          );
-        }
-      });
-    }, 350);
-  }, [scaleProgress, isDesktop, show]);
+    const interval = setInterval(() => {
+      const p = scaleProgressRef?.current ?? 0;
+      const next = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
+      if (next === lastDesktopIdx.current) return;
+      pendingIdxRef.current = next;
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      debounceTimer.current = setTimeout(() => {
+        const target = pendingIdxRef.current;
+        if (target === lastDesktopIdx.current) return;
+        lastDesktopIdx.current = target;
+        const top = topRef.current;
+        const bot = botRef.current;
+        if (!top || !bot) return;
+        gsap.killTweensOf([top, bot]);
+        gsap.to([top, bot], {
+          opacity: 0, y: -15, filter: 'blur(8px)',
+          duration: 0.35, ease: 'power2.in', stagger: 0.06,
+          onComplete: () => {
+            currentIdx.current = target;
+            setIdx(target);
+            gsap.fromTo([top, bot],
+              { opacity: 0, y: 18, filter: 'blur(8px)' },
+              { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, ease: 'power3.out', stagger: 0.1, overwrite: true }
+            );
+          }
+        });
+      }, 350);
+    }, 100);
+    return () => clearInterval(interval);
+  }, [isDesktop, show, scaleProgressRef]);
 
   // Auto-rotate phrases on mobile only
   useEffect(() => {
@@ -283,13 +284,13 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgress,
   );
 }
 
-export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange, scaleProgress }: {
+export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange, scaleProgressRef }: {
   onCTA: () => void;
   tr: Translations;
   lang: Lang;
   registerProgress?: (cb: (p: number) => void) => void;
   onHoverChange?: (hovered: boolean) => void;
-  scaleProgress?: number;
+  scaleProgressRef?: React.MutableRefObject<number>;
 }) {
   const [loaded, setLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -414,7 +415,7 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
           <Image src="/lappp.png" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           {/* CenterHeadline inside lap so it moves with it */}
           {!isMobile && (
-            <CenterHeadline lang={lang} hFont={hFont} switchRef={headlineSwitchRef} show={loaded} isMobile={false} scaleProgress={scaleProgress} insideLap />
+            <CenterHeadline lang={lang} hFont={hFont} switchRef={headlineSwitchRef} show={loaded} isMobile={false} scaleProgressRef={scaleProgressRef} insideLap />
           )}
         </div>
 
@@ -456,7 +457,7 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
 
         {/* Center rotating headline - mobile only, desktop is inside lap */}
         {isMobile && (
-          <CenterHeadline lang={lang} hFont={hFont} switchRef={headlineSwitchRef} show={loaded} isMobile={true} scaleProgress={scaleProgress} />
+          <CenterHeadline lang={lang} hFont={hFont} switchRef={headlineSwitchRef} show={loaded} isMobile={true} scaleProgressRef={scaleProgressRef} />
         )}
       </div>
 
