@@ -490,6 +490,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
       <div className={`${s.textBlock} ${s.textBlockEn}`}>
         <div className={s.line1Wrap}>
           <h1
+            dir={lang === "ar" ? "rtl" : "ltr"}
             className={`${s.heading} ${s.headingEnSpacing} ${s.colorFg} ${s.headingLine1Transition} ${loaded ? s.headingLoaded : s.headingHidden}`}
             style={{ fontFamily: hFont }}
           >
@@ -501,6 +502,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
         {tr.line2.length > 0 && (
         <div className={s.line2Wrap}>
           <h1
+            dir={lang === "ar" ? "rtl" : "ltr"}
             className={`${s.heading} ${s.headingEnSpacing} ${s.colorAccent} ${s.headingLine2Transition} ${loaded ? s.headingLoaded : s.headingHidden}`}
             style={{ fontFamily: hFont }}
           >
