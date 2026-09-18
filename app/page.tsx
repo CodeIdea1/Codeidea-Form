@@ -18,6 +18,7 @@ export default function Page() {
   const [submitted, setSubmitted] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
   const [scrollKey, setScrollKey] = useState(0);
+  const scaleProgressRef = useRef(0);
   const [scaleProgress, setScaleProgress] = useState(0);
   const heroProgressCbRef = useRef<((p: number) => void) | null>(null);
   // Setter provided by HorizontalScroll to toggle hover-scale mode on the first panel
@@ -38,7 +39,8 @@ export default function Page() {
   }, []);
 
   const handleScaleProgress = useCallback((p: number) => {
-    setScaleProgress(p);
+    scaleProgressRef.current = p;
+    startTransition(() => setScaleProgress(p));
   }, []);
 
   function handleSuccess(name: string) {
