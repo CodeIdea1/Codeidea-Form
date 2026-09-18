@@ -482,12 +482,12 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
       {/* Text content section - will scale on scroll */}
       <section
         ref={sectionRef}
-        dir="ltr"
-        className={`${s.section} ${s.sectionEn}`}
+        dir={lang === "ar" ? "rtl" : "ltr"}
+        className={`${s.section} ${isAr ? s.sectionAr : s.sectionEn}`}
       >
 
       {/* Text */}
-      <div className={`${s.textBlock} ${s.textBlockEn}`}>
+      <div className={`${s.textBlock} ${isAr ? s.textBlockAr : s.textBlockEn}`}>
         <div className={s.line1Wrap}>
           <h1
             dir={lang === "ar" ? "rtl" : "ltr"}

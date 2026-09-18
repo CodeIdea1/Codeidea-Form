@@ -658,6 +658,11 @@
 
   .line1Wrap, .line2Wrap {
     margin-right: -1rem;
+    margin-left: 0;
+  }
+  .textBlockAr .line1Wrap, .textBlockAr .line2Wrap {
+    margin-right: 0;
+    margin-left: -1rem;
   }
 
   .heading {
