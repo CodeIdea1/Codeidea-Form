@@ -498,6 +498,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
             ))}
           </h1>
         </div>
+        {tr.line2.length > 0 && (
         <div className={s.line2Wrap}>
           <h1
             className={`${s.heading} ${s.headingEnSpacing} ${s.colorAccent} ${s.headingLine2Transition} ${loaded ? s.headingLoaded : s.headingHidden}`}
@@ -508,6 +509,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
             ))}
           </h1>
         </div>
+        )}
         
         {/* Description text */}
         <p

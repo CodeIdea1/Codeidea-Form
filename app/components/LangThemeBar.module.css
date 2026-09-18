@@ -122,7 +122,7 @@
 /* Bring the logo a bit further left on desktop */
 @media (min-width: 769px) {
   .logoWrapEn { left: clamp(1.25rem, 5vw, 4rem); right: auto; }
-  .logoWrapAr { right: calc(clamp(1.25rem, 5vw, 4rem) + 2rem); left: auto; }
+  .logoWrapAr { right: calc(clamp(1.25rem, 5vw, 4rem) + 3rem); left: auto; }
 }
 
 .btn {
