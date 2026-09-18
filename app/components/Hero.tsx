@@ -33,7 +33,7 @@ function LapParticles() {
     let visible = true;
 
     function getColor() {
-      const isDark = document.documentElement.classList.contains("dark") || !document.documentElement.classList.contains("light");
+      const isDark = document.documentElement.classList.contains("dark");
       return isDark ? { r: 240, g: 237, b: 232 } : { r: 14, g: 13, b: 11 };
     }
 
@@ -291,6 +291,14 @@ function CenterHeadline({ lang, hFont, show, isMobile, scaleProgressRef, insideL
   );
 }
 
+function ShootingStar() {
+  return (
+    <div className={s.shootingStarWrap} aria-hidden="true">
+      <span className={s.shootingStar} />
+    </div>
+  );
+}
+
 export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange, scaleProgressRef }: {
   onCTA: () => void;
   tr: Translations;
@@ -497,6 +505,7 @@ export default function Hero({ onCTA, tr, lang, registerProgress, onHoverChange,
         {/* Floating particles above the lap */}
         <LapParticles />
 
+<ShootingStar />
         {/* tree */}
         <div className={`${s.tree} ${loaded ? s.treeLoaded : s.treeHidden}`}>
           <Image src="/main-tree.webp" alt="" fill style={{ objectFit: "contain", objectPosition: "bottom left", pointerEvents: "none" }} />

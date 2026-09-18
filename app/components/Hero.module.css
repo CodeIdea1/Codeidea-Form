@@ -14,7 +14,16 @@
   background-position: center;
   background-repeat: no-repeat;
   zoom: 1 !important; /* Force zoom to be 1 */
-}.imagesContainer > * {
+}
+
+/* Desktop + light mode: white background (dark mode keeps back-sec1) */
+@media (min-width: 769px) {
+  :global(html.light) .section {
+    background-image: url("/back-sec2-white.webp");
+  }
+}
+
+.imagesContainer > * {
   pointer-events: auto; /* Re-enable pointer events for children */
 }
 .sectionEn { align-items: flex-end; }
@@ -486,6 +495,7 @@
   z-index: 4;
   pointer-events: none;
   will-change: transform, opacity;
+  filter: blur(3.5px);
 }
 
 /* Desktop: use vw for responsive scaling */
@@ -834,5 +844,104 @@
     left: -50px; /* Move more to the left */
     bottom: 20px;
     opacity: 1 !important; /* Remove transparency */
+  }
+}
+
+
+
+/* Shooting star - constant-speed straight motion, subtle rightward rotation */
+.shootingStarWrap {
+  position: absolute;
+  left: 3%;
+  top: 68%;
+  width: 0;
+  height: 0;
+  z-index: 3; /* خلف الشخصية واللابتوب والكوباية والشجرة، يبان جوه المشهد مش فوقه */
+  pointer-events: none;
+}
+
+.shootingStar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.5px;
+  height: 2.5px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  box-shadow:
+    0 0 4px 1px rgba(255, 255, 255, 0.9),
+    0 0 10px 2px rgba(255, 255, 255, 0.35);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  /* أنيميشن منفصل للحركة (سرعة ثابتة تمامًا) وأنيميشن منفصل للشفافية */
+  animation:
+    meteorMove 9s linear infinite,
+    meteorFade 9s ease-in-out infinite;
+  animation-delay: 2s, 2s;
+}
+
+.shootingStar::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 95px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55));
+  transform: translateY(-50%);
+  border-radius: 999px;
+}
+
+/* حركة خط مستقيم بسرعة ثابتة من نقطة لنقطة فقط - بدون أي خطوة وسيطة */
+@keyframes meteorMove {
+  0% {
+    translate: 0 0;
+    rotate: -25deg;
+  }
+  28% {
+    translate: 92vw -88vh;
+    rotate: -24deg; /* دورة درجة واحدة كاملة لليمين (Clockwise) */
+  }
+  100% {
+    translate: 92vw -88vh;
+    rotate: -24deg;
+  }
+}
+
+/* الشفافية منفصلة تمامًا عن الحركة، فمفيش أي تأثير على السرعة */
+@keyframes meteorFade {
+  0% { opacity: 0; }
+  4% { opacity: 1; }
+  24% { opacity: 1; }
+  28% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shootingStar {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .shootingStarWrap {
+    left: 2%;
+    top: 62%;
+  }
+  @keyframes meteorMove {
+    0% {
+      translate: 0 0;
+      rotate: -25deg;
+    }
+    28% {
+      translate: 94vw -58vh;
+      rotate: -24deg;
+    }
+    100% {
+      translate: 94vw -58vh;
+      rotate: -24deg;
+    }
   }
 }

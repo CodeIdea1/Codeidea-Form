@@ -51,7 +51,7 @@ export default function ParticlesBackground() {
     setup();
 
     function getParticleColor() {
-      const isDark = document.documentElement.classList.contains("dark") || !document.documentElement.classList.contains("light");
+      const isDark = document.documentElement.classList.contains("dark");
       return isDark ? { r: 240, g: 237, b: 232 } : { r: 14, g: 13, b: 11 };
     }
 
