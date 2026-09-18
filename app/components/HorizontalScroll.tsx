@@ -109,9 +109,10 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     let lastRenderedScroll = -1;
     let firedLast = false;
     function animate() {
+      // Update easing to settle each snap faster
       const diff = targetScrollRef.current - scrollRef.current;
       if (Math.abs(diff) > 0.5) {
-        scrollRef.current += diff * 0.12;
+        scrollRef.current += diff * 0.18;
       } else {
         scrollRef.current = targetScrollRef.current;
       }
@@ -150,8 +151,14 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
         onScaleProgress?.(p);
         return;
       }
+      // Already gliding toward a panel: ignore further ticks until it settles (snap once per scroll)
+      if (Math.abs(targetScrollRef.current - scrollRef.current) > 2) return;
       const maxScroll = (total - 1) * window.innerWidth;
-      targetScrollRef.current = Math.max(0, Math.min(maxScroll, targetScrollRef.current + e.deltaY * 2));
+      const cur = Math.round(scrollRef.current / window.innerWidth);
+      let next = cur;
+      if (e.deltaY > 0) next = Math.min(total - 1, cur + 1);
+      else if (e.deltaY < 0) next = Math.max(0, cur - 1);
+      targetScrollRef.current = next * window.innerWidth;
     }
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
