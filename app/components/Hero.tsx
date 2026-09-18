@@ -90,12 +90,11 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
   insideLap?: boolean;
 }) {
   const phrases = PHRASES[lang];
-  const [idx, setIdx] = useState(0);
-  const animatingRef = useRef(false);
   const topRef = useRef<HTMLSpanElement>(null);
   const botRef = useRef<HTMLSpanElement>(null);
   const currentIdx = useRef(0);
   const rootRef = useRef<HTMLDivElement>(null);
+  const animatingRef = useRef(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
   // Detect desktop
@@ -146,7 +145,8 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
           duration: 0.35, ease: 'power2.in', stagger: 0.06,
           onComplete: () => {
             currentIdx.current = target;
-            setIdx(target);
+            if (topRef.current) topRef.current.textContent = phrases[target].top;
+            if (botRef.current) botRef.current.textContent = phrases[target].bottom;
             gsap.fromTo([top, bot],
               { opacity: 0, y: 18, filter: 'blur(8px)' },
               { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, ease: 'power3.out', stagger: 0.1, overwrite: true }
@@ -188,8 +188,8 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
       stagger: 0.2,
       onComplete: () => {
         currentIdx.current = next;
-        setIdx(next);
-        // Slower fade-in: coming from bottom with smooth animation
+        if (topRef.current) topRef.current.textContent = phrases[next].top;
+        if (botRef.current) botRef.current.textContent = phrases[next].bottom;
         gsap.fromTo(
           [top, bot],
           { 
@@ -264,7 +264,7 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
           marginBottom: "0.1em",
         }}
       >
-        {phrases[idx].top}
+        {phrases[0].top}
       </span>
       <span
         ref={botRef}
@@ -278,7 +278,7 @@ function CenterHeadline({ lang, hFont, switchRef, show, isMobile, scaleProgressR
           textTransform: "uppercase",
         }}
       >
-        {phrases[idx].bottom}
+        {phrases[0].bottom}
       </span>
     </div>
   );
