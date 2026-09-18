@@ -113,7 +113,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
       // Update easing to settle each snap faster
       const diff = targetScrollRef.current - scrollRef.current;
       if (Math.abs(diff) > 0.5) {
-        scrollRef.current += diff * 0.15;
+        scrollRef.current += diff * 0.2;
       } else {
         scrollRef.current = targetScrollRef.current;
       }
@@ -152,11 +152,15 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
         onScaleProgress?.(p);
         return;
       }
-      // One section per scroll gesture: only flip when a real pause separates gestures
+      // Ignore micro-deltas (trackpad noise while the finger rests) so a real gesture is detectable
       const now = Date.now();
-      const gestureEnded = now - lastWheelEventRef.current > 120;
+      const magnitude = Math.abs(e.deltaY);
+      if (magnitude < 4) return;
+      const settled = Math.abs(targetScrollRef.current - scrollRef.current) <= 4;
+      const gestureEnded = now - lastWheelEventRef.current > 150;
       lastWheelEventRef.current = now;
-      if (gestureEnded && Math.abs(targetScrollRef.current - scrollRef.current) <= 2) {
+      // One section per completed gesture
+      if (settled && gestureEnded) {
         const maxScroll = (total - 1) * window.innerWidth;
         const cur = Math.round(scrollRef.current / window.innerWidth);
         let next = cur;
