@@ -24,7 +24,6 @@
   background: rgba(var(--bg-rgb), 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 0.5rem 0.85rem;
 }
@@ -86,12 +85,12 @@
 
   .btn {
     flex-shrink: 0;
-    padding: 0.55rem 0.95rem;
-    font-size: 0.78rem;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.7rem;
   }
   .btnTheme {
-    padding: 0.55rem 0.75rem;
-    font-size: 0.9rem;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -110,12 +109,12 @@
     gap: 0.35rem;
   }
   .btn {
-    padding: 0.48rem 0.8rem;
-    font-size: 0.72rem;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.65rem;
   }
   .btnTheme {
-    padding: 0.48rem 0.65rem;
-    font-size: 0.85rem;
+    padding: 0.4rem 0.55rem;
+    font-size: 0.75rem;
   }
 }
 
