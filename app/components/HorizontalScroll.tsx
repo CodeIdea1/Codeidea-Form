@@ -112,7 +112,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
       // Update easing to settle each snap faster
       const diff = targetScrollRef.current - scrollRef.current;
       if (Math.abs(diff) > 0.5) {
-        scrollRef.current += diff * 0.22;
+        scrollRef.current += diff * 0.15;
       } else {
         scrollRef.current = targetScrollRef.current;
       }
