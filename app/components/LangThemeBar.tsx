@@ -1,19 +1,24 @@
 "use client";
-import { Lang } from "../i18n";
+import { useState } from "react";
+import { Translations, Lang } from "../i18n";
 import Image from "next/image";
+import SiteMenu from "./SiteMenu";
 import s from "./LangThemeBar.module.css";
 
 type Props = {
   lang: Lang;
   theme: "dark" | "light";
+  tr: Translations;
   onLang: (l: Lang) => void;
   onTheme: () => void;
+  onNavigate: (section: number) => void;
   solid?: boolean;
 };
 
-export default function LangThemeBar({ lang, theme, onLang, onTheme, solid }: Props) {
+export default function LangThemeBar({ lang, theme, tr, onLang, onTheme, onNavigate, solid }: Props) {
   const isDark = theme === "dark";
   const isAr = lang === "ar";
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const onBtnEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.currentTarget.style.borderColor = "var(--accent-dim)";
@@ -25,6 +30,7 @@ export default function LangThemeBar({ lang, theme, onLang, onTheme, solid }: Pr
   };
 
   return (
+    <>
     <div className={`${s.bar} ${isAr ? s.barAr : s.barEn} ${solid ? s.scrolled : ""}`}>
       {/* Logo */}
       <div className={`${s.logoWrap} ${isAr ? s.logoWrapAr : s.logoWrapEn}`}>
@@ -59,7 +65,32 @@ export default function LangThemeBar({ lang, theme, onLang, onTheme, solid }: Pr
         >
           {isDark ? "☀" : "◑"}
         </button>
+
+        {/* Menu toggle */}
+        <button
+          className={`${s.btn} ${s.menuBtn}`}
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Menu"
+          aria-expanded={menuOpen}
+          onMouseEnter={onBtnEnter}
+          onMouseLeave={onBtnLeave}
+        >
+          <span className={s.lines}>
+            <span className={`${s.line} ${menuOpen ? s.lineOpen : ""}`} />
+            <span className={`${s.line} ${menuOpen ? s.lineOpen : ""}`} />
+            <span className={`${s.line} ${menuOpen ? s.lineOpen : ""}`} />
+          </span>
+        </button>
       </div>
     </div>
+
+    <SiteMenu
+      open={menuOpen}
+      lang={lang}
+      tr={tr}
+      onClose={() => setMenuOpen(false)}
+      onNavigate={onNavigate}
+    />
+    </>
   );
 }

@@ -1,10 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Translations, Lang } from "../i18n";
+import useIsMobile from "./useIsMobile";
 import s from "./TheQuestion.module.css";
 
 export default function TheQuestion({ tr, lang }: { tr: Translations; lang: Lang }) {
   const isAr = lang === "ar";
+  const isMobile = useIsMobile();
+  const mirror = isAr && !isMobile;
   const hFont = isAr ? "var(--font-arabic)" : "var(--font-heading)";
   const mFont = isAr ? "var(--font-arabic)" : "var(--font-geist-mono)";
   const dFont = isAr ? "var(--font-arabic)" : "var(--font-body)";
@@ -31,21 +34,21 @@ export default function TheQuestion({ tr, lang }: { tr: Translations; lang: Lang
   return (
     <section
       ref={sectionRef}
-      className={`${s.section} ${isAr ? s.sectionRtl : s.sectionLtr}`}
+      className={`${s.section} ${mirror ? s.sectionRtl : s.sectionLtr}`}
     >
-      <div className={`${s.sectionLabel} ${isAr ? s.sectionLabelRtl : s.sectionLabelLtr}`} style={fadeIn("0s")}>
+      <div className={`${s.sectionLabel} ${mirror ? s.sectionLabelRtl : s.sectionLabelLtr}`} style={fadeIn("0s")}>
         <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.72rem", letterSpacing: isAr ? "0" : "0.18em", color: "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase" }}>
           {tr.sectionLabel01}
         </span>
         <div className={s.labelLine} />
       </div>
 
-      <div className={`${s.contentWrapper} ${isAr ? s.contentWrapperRtl : s.contentWrapperLtr}`}>
+      <div className={`${s.contentWrapper} ${mirror ? s.contentWrapperRtl : s.contentWrapperLtr}`}>
         <p style={{ fontFamily: dFont, fontSize: isAr ? "clamp(1.1rem,2.5vw,1.5rem)" : "clamp(1.05rem,2.4vw,1.45rem)", color: "var(--fg-dim)", fontWeight: isAr ? 400 : 300, lineHeight: isAr ? 1.9 : 1.7, marginBottom: "clamp(1.5rem,4vw,3rem)", ...fadeIn("0.15s") }}>
           {tr.questionIntro}
         </p>
 
-        <div className={`${s.quoteWrapper} ${isAr ? s.quoteWrapperRtl : s.quoteWrapperLtr}`} style={fadeIn("0.3s")}>
+        <div className={`${s.quoteWrapper} ${mirror ? s.quoteWrapperRtl : s.quoteWrapperLtr}`} style={fadeIn("0.3s")}>
           <p style={{ fontFamily: hFont, fontSize: "clamp(1.9rem,5.8vw,4.75rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.025em", lineHeight: isAr ? 1.3 : 1.1, color: "var(--fg)" }}>
             {tr.questionQuote[0]}
             <br />
@@ -53,12 +56,12 @@ export default function TheQuestion({ tr, lang }: { tr: Translations; lang: Lang
           </p>
         </div>
 
-        <p style={{ fontFamily: dFont, fontSize: isAr ? "clamp(1rem,2vw,1.2rem)" : "clamp(0.95rem,1.8vw,1.1rem)", color: "var(--fg-dim)", fontWeight: isAr ? 400 : 300, lineHeight: isAr ? 1.9 : 1.7, maxWidth: "520px", marginLeft: isAr ? "auto" : 0, ...fadeIn("0.5s") }}>
+        <p style={{ fontFamily: dFont, fontSize: isAr ? "clamp(1rem,2vw,1.2rem)" : "clamp(0.95rem,1.8vw,1.1rem)", color: "var(--fg-dim)", fontWeight: isAr ? 400 : 300, lineHeight: isAr ? 1.9 : 1.7, maxWidth: "520px", marginLeft: mirror ? "auto" : 0, ...fadeIn("0.5s") }}>
           {tr.questionClose.split("\n").map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}
         </p>
       </div>
 
-      <div className={`${s.ghostNumber} ${isAr ? s.ghostNumberRtl : s.ghostNumberLtr}`} style={fadeIn("0.1s")}>01</div>
+      <div className={`${s.ghostNumber} ${mirror ? s.ghostNumberRtl : s.ghostNumberLtr}`} style={fadeIn("0.1s")}>01</div>
     </section>
   );
 }

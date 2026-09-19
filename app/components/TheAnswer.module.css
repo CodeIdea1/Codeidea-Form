@@ -66,6 +66,36 @@
   background: var(--accent-dim);
 }
 
+.badgeLabel {
+  font-family: var(--font-geist-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--accent-dim);
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.badgeLabelAr {
+  font-family: var(--font-arabic);
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  color: var(--accent-dim);
+  transition: color 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .badgeLabel {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+
+  .badgeLabelAr {
+    font-size: 0.78rem;
+    color: var(--accent);
+  }
+}
+
 .ghostNumber {
   position: absolute;
   bottom: clamp(2rem, 6vw, 5rem);

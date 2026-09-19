@@ -8,6 +8,8 @@ const HOVER_SCALE = 1.5;
 const TARGET_Y = -120;
 const TARGET_X = 60;
 const SCALE_SCROLL_RANGE = 1000;
+const WHEEL_THRESHOLD = 24;
+const DRAG_THRESHOLD = 60;
 
 interface Props {
   children: ReactNode | ReactNode[];
@@ -18,16 +20,20 @@ interface Props {
   resetTrigger?: number;
   registerHoverControl?: (setHovered: (v: boolean) => void) => void;
   registerScrollToForm?: (scrollFn: () => void) => void;
+  registerScrollToIndex?: (scrollFn: (index: number) => void) => void;
 }
 
-export default function HorizontalScroll({ children, onScrollToLast, onHeroProgress, onScaleProgress, lang, resetTrigger, registerHoverControl, registerScrollToForm }: Props) {
-  const [isMobile, setIsMobile] = useState(false);
+export default function HorizontalScroll({ children, onScrollToLast, onHeroProgress, onScaleProgress, lang, resetTrigger, registerHoverControl, registerScrollToForm, registerScrollToIndex }: Props) {
+  // null = not yet measured. Rendering nothing avoids emitting the desktop
+  // 600vw track on mobile (which expands the layout viewport and pushes the
+  // fixed loader to the bottom/right corner) before we know the width.
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<number>(0);
 
   const scrollRef = useRef(0);
-  const targetScrollRef = useRef(0);
   const rafRef = useRef<number | null>(null);
+  const scrollTweenRef = useRef<gsap.core.Tween | null>(null);
 
   const isImageHoveredRef = useRef(false);
   const scaleScrollAccRef = useRef(0);
@@ -43,6 +49,32 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
   const panels = Array.isArray(children) ? children : [children];
   const total = panels.length;
 
+  // Snap to a given section index with a professional eased tween.
+  const snapToSectionRef = useRef<(index: number) => void>(() => {});
+  snapToSectionRef.current = (index: number) => {
+    const maxScroll = (total - 1) * window.innerWidth;
+    const target = Math.max(0, Math.min(maxScroll, index * window.innerWidth));
+    if (scrollTweenRef.current) scrollTweenRef.current.kill();
+    const from = scrollRef.current;
+    if (Math.abs(target - from) < 1) return;
+    const proxy = { v: from };
+    scrollTweenRef.current = gsap.to(proxy, {
+      v: target,
+      duration: Math.min(1.1, Math.max(0.7, (Math.abs(target - from) / window.innerWidth) * 0.9 + 0.4)),
+      ease: "expo.inOut",
+      onUpdate: () => {
+        scrollRef.current = proxy.v;
+      },
+      onComplete: () => {
+        scrollRef.current = target;
+        scrollTweenRef.current = null;
+        const p = maxScroll > 0 ? scrollRef.current / maxScroll : 0;
+        progressRef.current = p;
+        onScrollToLast();
+      },
+    });
+  };
+
   // Register scroll to form function
   useEffect(() => {
     if (!registerScrollToForm) return;
@@ -54,9 +86,8 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
           formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       } else {
-        // On desktop, set target scroll to last panel
-        const maxScroll = (total - 1) * window.innerWidth;
-        targetScrollRef.current = maxScroll;
+        // On desktop, snap to the last panel
+        snapToSectionRef.current(total - 1);
       }
     });
   }, [registerScrollToForm, isMobile, total]);
@@ -91,11 +122,23 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
 
   useEffect(() => {
     scrollRef.current = 0;
-    targetScrollRef.current = 0;
+    if (scrollTweenRef.current) { scrollTweenRef.current.kill(); scrollTweenRef.current = null; }
     scaleScrollAccRef.current = 0;
     if (trackRef.current) trackRef.current.style.transform = `translate3d(0px, 0, 0)`;
     if (firstPanelRef.current) gsap.set(firstPanelRef.current, { scale: 1, y: 0, x: 0 });
   }, [resetTrigger]);
+
+  useEffect(() => {
+    if (!registerScrollToIndex) return;
+    registerScrollToIndex((index) => {
+      if (isMobile) {
+        const panel = document.querySelector(`[data-panel="${index}"]`);
+        if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        snapToSectionRef.current(index);
+      }
+    });
+  }, [registerScrollToIndex, isMobile, total]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -109,21 +152,16 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     let lastRenderedScroll = -1;
     let firedLast = false;
     function animate() {
-      const diff = targetScrollRef.current - scrollRef.current;
-      if (Math.abs(diff) > 0.5) {
-        scrollRef.current += diff * 0.12;
-      } else {
-        scrollRef.current = targetScrollRef.current;
-      }
-      if (Math.abs(scrollRef.current - lastRenderedScroll) > 0.5) {
-        lastRenderedScroll = scrollRef.current;
+      const v = scrollRef.current;
+      if (Math.abs(v - lastRenderedScroll) > 0.5) {
+        lastRenderedScroll = v;
         if (trackRef.current) {
-          trackRef.current.style.transform = `translate3d(${-scrollRef.current}px, 0, 0)`;
+          trackRef.current.style.transform = `translate3d(${-v}px, 0, 0)`;
         }
         const maxScroll = (total - 1) * window.innerWidth;
-        const p = maxScroll > 0 ? scrollRef.current / maxScroll : 0;
+        const p = maxScroll > 0 ? v / maxScroll : 0;
         progressRef.current = p;
-        onHeroProgress?.(Math.min(1, scrollRef.current / window.innerWidth));
+        onHeroProgress?.(Math.min(1, v / window.innerWidth));
       }
       const maxScrollNow = (total - 1) * window.innerWidth;
       if (Math.abs(scrollRef.current - maxScrollNow) < 50) {
@@ -139,6 +177,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
 
   useEffect(() => {
     if (isMobile) return;
+    let wheelAcc = 0;
     function onWheel(e: WheelEvent) {
       e.preventDefault();
       if (isImageHoveredRef.current) {
@@ -150,8 +189,14 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
         onScaleProgress?.(p);
         return;
       }
-      const maxScroll = (total - 1) * window.innerWidth;
-      targetScrollRef.current = Math.max(0, Math.min(maxScroll, targetScrollRef.current + e.deltaY));
+      wheelAcc += e.deltaY;
+      if (Math.abs(wheelAcc) < WHEEL_THRESHOLD) return;
+      const dir = wheelAcc > 0 ? 1 : -1;
+      wheelAcc = 0;
+      if (scrollTweenRef.current) return; // lock during snap
+      const cur = Math.round(scrollRef.current / window.innerWidth);
+      const next = Math.max(0, Math.min(total - 1, cur + dir));
+      if (next !== cur) snapToSectionRef.current(next);
     }
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
@@ -159,20 +204,34 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
 
   useEffect(() => {
     if (isMobile) return;
-    let startY = 0, isDragging = false;
-    const onStart = (e: TouchEvent) => { 
-      startY = e.touches[0].clientY; 
-      isDragging = true; 
+    let originY = 0, lastY = 0, isDragging = false;
+    const onStart = (e: TouchEvent) => {
+      originY = e.touches[0].clientY;
+      lastY = originY;
+      isDragging = true;
+      if (scrollTweenRef.current) { scrollTweenRef.current.kill(); scrollTweenRef.current = null; }
     };
     const onMove = (e: TouchEvent) => {
       if (!isDragging) return;
       e.preventDefault(); // Prevent default to allow custom scroll
-      const delta = (startY - e.touches[0].clientY) * 3;
+      lastY = e.touches[0].clientY;
+      // Live-track the finger (clamped)
+      const delta = (originY - lastY);
       const maxScroll = (total - 1) * window.innerWidth;
-      targetScrollRef.current = Math.max(0, Math.min(maxScroll, targetScrollRef.current + delta));
-      startY = e.touches[0].clientY;
+      scrollRef.current = Math.max(0, Math.min(maxScroll, scrollRef.current + delta));
+      originY = lastY;
     };
-    const onEnd = () => { isDragging = false; };
+    const onEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      // Snap to the nearest section boundary based on the drag direction
+      const cur = Math.round(scrollRef.current / window.innerWidth);
+      const overshoot = scrollRef.current - cur * window.innerWidth;
+      let next = cur;
+      if (overshoot > DRAG_THRESHOLD) next = Math.min(total - 1, cur + 1);
+      else if (overshoot < -DRAG_THRESHOLD) next = Math.max(0, cur - 1);
+      snapToSectionRef.current(next);
+    };
     window.addEventListener("touchstart", onStart, { passive: true });
     window.addEventListener("touchmove", onMove, { passive: false });
     window.addEventListener("touchend", onEnd, { passive: true });
@@ -189,24 +248,31 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
       if (e.key === "ArrowDown" || e.key === "ArrowRight") {
         e.preventDefault();
         const cur = Math.round(scrollRef.current / window.innerWidth);
-        targetScrollRef.current = Math.min(total - 1, cur + 1) * window.innerWidth;
+        if (scrollTweenRef.current) return;
+        snapToSectionRef.current(Math.min(total - 1, cur + 1));
       } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
         e.preventDefault();
         const cur = Math.round(scrollRef.current / window.innerWidth);
-        targetScrollRef.current = Math.max(0, cur - 1) * window.innerWidth;
+        if (scrollTweenRef.current) return;
+        snapToSectionRef.current(Math.max(0, cur - 1));
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isMobile, total]);
 
+  // Until the viewport is measured (SSR + first commit), render nothing so the
+  // desktop track (width: 600vw, fixed) never touches a mobile screen layout.
+  if (isMobile === null) return null;
+
   if (isMobile) {
     return (
-      <div className={s.mobileWrapper}>
+      <div dir="ltr" className={s.mobileWrapper}>
         <ScrollProgressLine progressRef={progressRef} />
         {panels.map((child, i) => (
           <div 
             key={i}
+            data-panel={i}
             data-section={i === panels.length - 1 ? "form" : undefined}
             style={{ 
               minHeight: '100svh',
@@ -232,6 +298,7 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
         {panels.map((child, i) => (
           <div
             key={i}
+            data-panel={i}
             ref={i === 0 ? (el) => { if (el) firstPanelRef.current = el; } : undefined}
             className={s.panel}
           >

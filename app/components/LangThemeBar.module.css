@@ -1,7 +1,7 @@
 .bar {
   position: fixed;
   top: clamp(1rem, 2.5vw, 1.5rem);
-  z-index: 1000;
+  z-index: 10001;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -92,6 +92,10 @@
     padding: 0.45rem 0.65rem;
     font-size: 0.8rem;
   }
+  .menuBtn {
+    width: 42px;
+    height: 42px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -116,6 +120,10 @@
     padding: 0.4rem 0.55rem;
     font-size: 0.75rem;
   }
+  .menuBtn {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* Bring the logo a bit further left on desktop */
@@ -126,14 +134,15 @@
 
 .btn {
   background: transparent;
-  border: 1.5px solid var(--accent-dim);
+  border: none;
   color: var(--fg);
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 0.65rem 1.15rem;
-  transition: border-color 0.3s, color 0.3s, background 0.3s;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  transition: background 0.3s, color 0.3s;
   line-height: 1;
   white-space: nowrap;
 }
@@ -142,9 +151,40 @@
 .btnAr { font-family: var(--font-arabic); letter-spacing: 0.05em; }
 
 .btnTheme {
-  padding: 0.65rem 0.9rem;
+  padding: 0.7rem 0.95rem;
   font-size: 1rem;
 }
+
+/* Menu (hamburger) button */
+.menuBtn {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lines {
+  width: 22px;
+  height: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--fg);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.lineOpen:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.lineOpen:nth-child(2) { opacity: 0; }
+.lineOpen:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
 .actions {
   display: flex;

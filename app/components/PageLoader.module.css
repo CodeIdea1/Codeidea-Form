@@ -1,0 +1,113 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: min(2.5vw, 2.5rem);
+}
+
+.video {
+  width: min(35vw, 300px);
+  height: auto;
+  display: block;
+  transform: translateY(-85%);
+}
+
+.logo {
+  width: min(38vw, 300px);
+  height: auto;
+  display: block;
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  will-change: clip-path, opacity;
+  transform: translateY(130%);
+  z-index: 999;
+}
+
+/* Mobile: the percentage transforms (translateY 130% / -85%) shift content
+   relative to each media's loaded height, and on small screens that throws
+   the logo + video off-center once the image/video metadata loads. On ≤768px
+   stack them in normal flow with no offsets so the group stays truly centered.
+   Margins + explicit aspect ratios guarantee centering even if media fails
+   to load or reports no intrinsic size yet. */
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: ltr;
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.mobileContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  transform: translateY(-8%);
+}
+
+.mobileVideo {
+  width: min(50vw, 220px);
+  height: auto;
+  display: block;
+  margin-bottom: -0.5rem;
+}
+
+.mobileLogo {
+  width: min(44vw, 200px);
+  height: auto;
+  display: block;
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  will-change: clip-path, opacity;
+  margin-top: -0.5rem;
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    gap: clamp(1rem, 5vw, 1.5rem);
+    max-width: 90vw;
+  }
+
+  .video {
+    transform: none;
+    width: min(62vw, 320px);
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .logo {
+    transform: none;
+    width: min(50vw, 260px);
+    height: auto;
+    aspect-ratio: 2020 / 778;
+  }
+}

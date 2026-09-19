@@ -246,13 +246,14 @@ function ShootingStar() {
   );
 }
 
-export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHoverChange }: {
+export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHoverChange, active }: {
   onCTA: () => void;
   tr: Translations;
   lang: Lang;
   theme: "dark" | "light";
   registerProgress?: (cb: (p: number) => void) => void;
   onHoverChange?: (hovered: boolean) => void;
+  active?: boolean;
 }) {
   const [loaded, setLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -318,9 +319,10 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
   }, []);
 
   useEffect(() => {
+    if (!active) return;
     const t = setTimeout(() => setLoaded(true), 80);
     return () => clearTimeout(t);
-  }, []);
+  }, [active]);
 
   // Detect mobile screen
   useEffect(() => {
@@ -354,6 +356,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
   useEffect(() => {
     const el = lapRef.current;
     if (!el) return;
+    if (!active) return;
 
     // In mobile: show immediately without animation
     if (isMobile) {
@@ -362,11 +365,11 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
       return;
     }
 
-    // Desktop: use GSAP animation
+    // Desktop: appear immediately (already loaded), keep the laptop's resting 3D rotation
     gsap.set(el, {
-      scale: 0.85,
-      y: 50,
-      opacity: 0,
+      scale: 1,
+      y: 0,
+      opacity: 1,
       skewY: 6,
       rotationY: -18,
       rotationX: 10,
@@ -378,22 +381,21 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
       scale: 1,
       y: 0,
       opacity: 1,
-      duration: 1.2,
-      delay: 1.3,
-      ease: "power3.out",
+      duration: 0.001,
+      ease: "none",
     });
 
     return () => {
       mountTween.kill();
     };
-  }, [isMobile]);
+  }, [active, isMobile]);
 
   return (
     <>
       {/* Images layer - outside section to avoid scale transform */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
         {/* Hero main image */}
-        <div className={`${s.heroImg} ${s.heroImgEn} ${loaded ? s.heroImgLoaded : s.heroImgHidden}`} style={{ pointerEvents: 'none' }}>
+        <div className={`${s.heroImg} ${s.heroImgEn} ${s.heroImgLoaded}`} style={{ pointerEvents: 'none' }}>
           <Image 
             src="/saja.webp"
             alt="Hero" 
@@ -434,14 +436,14 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
         </div>
 
         {/* mug.png */}
-        <div className={`${s.mug} ${loaded ? s.mugLoaded : s.mugHidden}`} style={{ pointerEvents: 'auto' }} onMouseDown={playMugTipSound}>
+        <div className={`${s.mug} ${s.mugLoaded}`} style={{ pointerEvents: 'auto' }} onMouseDown={playMugTipSound}>
           <div className={`${s.steamContainer} ${loaded ? s.steamVisible : s.steamHidden}`} aria-hidden="true">
             <span className={`${s.steamBlob} ${s.steam1}`} />
             <span className={`${s.steamBlob} ${s.steam2}`} />
             <span className={`${s.steamBlob} ${s.steam3}`} />
             <span className={`${s.steamBlob} ${s.steam4}`} />
           </div>
-          <Image src={theme === "light" ? "/mug-white.png" : "/mug2.webp"} alt="Mug" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
+          <Image src={theme === "light" ? "/white-mug.webp" : "/mug2.webp"} alt="Mug" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
           <div className={s.mugTip} role="tooltip" style={{ fontFamily: hFont }} data-open={mugTipOpen} data-closed-anim={mugTipEverOpen && !mugTipOpen}>
             <span className={s.mugTipStem} aria-hidden="true" />
             <span className={s.mugTipIcon} aria-hidden="true">☕</span>
@@ -454,7 +456,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
 
 {!isMobile && <ShootingStar />}
         {/* tree */}
-        <div className={`${s.tree} ${loaded ? s.treeLoaded : s.treeHidden}`}>
+        <div className={`${s.tree} ${s.treeLoaded}`}>
           <Image src="/main-tree.webp" alt="" fill style={{ objectFit: "contain", objectPosition: "bottom left", pointerEvents: "none" }} />
           <div className={s.treeLeaf}>
             <Image src="/a-leaf2.webp" alt="" fill style={{ objectFit: "contain", pointerEvents: "none" }} />
@@ -522,10 +524,10 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
         </p>
 
         {/* CTA button */}
-        <div className={`${s.ctaRow} ${s.ctaRowEn} ${loaded ? s.ctaRowLoaded : s.ctaRowHidden}`}>
+        <div className={`${s.ctaRow} ${isAr ? s.ctaRowAr : s.ctaRowEn} ${loaded ? s.ctaRowLoaded : s.ctaRowHidden}`}>
           <button
             onClick={onCTA}
-            className={`${s.btn} ${s.btnEn}`}
+            className={`${s.btn} ${isAr ? s.btnAr : s.btnEn}`}
             style={{ fontFamily: hFont }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLButtonElement).style.background = "var(--accent)";

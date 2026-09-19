@@ -161,6 +161,10 @@
     height: 23vw !important;
     max-width: unset;
     max-height: unset;
+    /* Resting 3D rotation - same matrix GSAP applies for skewY:6, rotationY:-18,
+       rotationX:10, transformPerspective:900. Set here so the laptop's final
+       proportions are the baseline from the very first paint (no flash). */
+    transform: matrix3d(0.945417, 0.103507, 0.326375, -0.000362639, -0.0536602, 0.984808, 0.165149, -0.000183499, -0.304322, -0.173648, 0.936608, -0.00104068, 0, 0, 0, 1);
   }
 }
 
@@ -176,10 +180,10 @@
   align-items: flex-end; /* All items aligned to the right */
 }
 .textBlockAr { 
-  text-align: left;
+  text-align: right;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* All items aligned to the left */
+  align-items: flex-start; /* RTL section -> physically right */
   transform: translateY(-9vh);
 }
 
@@ -244,7 +248,7 @@
   justify-content: flex-end;
 }
 .ctaRowAr { 
-  justify-content: flex-start;
+  justify-content: flex-start; /* RTL section -> physically right */
 }
 .ctaRowLoaded { opacity: 1; transform: translateY(0); transition: opacity 0.8s ease 0.5s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s; }
 .ctaRowHidden { opacity: 0; transform: translateY(16px); }
@@ -660,7 +664,7 @@
   }
 
   .textBlockEn { text-align: right; }
-  .textBlockAr { text-align: left; }
+  .textBlockAr { text-align: right; }
 
   .line1Wrap, .line2Wrap {
     width: 100%;
@@ -669,7 +673,7 @@
 
   .heading {
     width: 100%;
-    font-size: clamp(1.5rem, 7vw, 2.6rem);
+    font-size: clamp(1.9rem, 5.8vw, 4.75rem);
   }
 
   .heroDescription {
@@ -685,6 +689,10 @@
 
   .ctaRowEn {
     justify-content: flex-end;
+  }
+
+  .ctaRowAr {
+    justify-content: flex-start; /* RTL -> physically right on mobile */
   }
 
   .btn {

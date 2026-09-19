@@ -6,4 +6,12 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  opacity: 0;
+  animation: canvasFadeIn 1.2s ease 0.9s both;
+}
+
+@keyframes canvasFadeIn {
+  to {
+    opacity: 1;
+  }
 }

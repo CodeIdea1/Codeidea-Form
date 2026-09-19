@@ -3,6 +3,7 @@ import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Translations, Lang } from "../i18n";
+import useIsMobile from "./useIsMobile";
 import s from "./EarlyAccessForm.module.css";
 
 type FormData = { name: string; email: string; whatsapp: string; interest: string };
@@ -13,6 +14,8 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(false);
   const isAr = lang === "ar";
+  const isMobile = useIsMobile();
+  const mirror = isAr && !isMobile;
   const hFont = isAr ? "var(--font-arabic)" : "var(--font-heading)";
   const mFont = isAr ? "var(--font-arabic)" : "var(--font-geist-mono)";
   const dFont = isAr ? "var(--font-arabic)" : "var(--font-body)";
@@ -69,19 +72,19 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
     fontFamily: mFont, fontSize: isAr ? "0.8rem" : "0.75rem",
     letterSpacing: isAr ? "0" : "0.2em", color: "var(--fg-muted)",
     textTransform: isAr ? "none" : "uppercase", display: "block", marginBottom: "0.2rem",
-    textAlign: isAr ? "right" : "left",
+    textAlign: mirror ? "right" : "left",
   };
 
   return (
     <section id="early-access-form" className={s.section}>
 
-      <div style={{ marginBottom: "clamp(1.5rem,3vw,2.5rem)", display: "flex", alignItems: "center", gap: "1rem", flexDirection: isAr ? "row-reverse" : "row" }}>
+      <div style={{ marginBottom: "clamp(1.5rem,3vw,2.5rem)", display: "flex", alignItems: "center", gap: "1rem", flexDirection: mirror ? "row-reverse" : "row" }}>
         <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.72rem", letterSpacing: isAr ? "0" : "0.18em", color: "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase" }}>{tr.sectionLabel05}</span>
         <div style={{ flex: 1, height: "1px", background: "var(--line)", maxWidth: "80px" }} />
       </div>
 
       <div className={s.grid}>
-        <div style={{ textAlign: isAr ? "right" : "left", order: isAr ? 2 : 1 }}>
+        <div style={{ textAlign: mirror ? "right" : "left", order: mirror ? 2 : 1 }}>
           <h2 style={{ fontFamily: hFont, fontSize: "clamp(2.2rem,5.3vw,3.75rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.3 : 1.0, color: "var(--fg)", marginBottom: "1rem" }}>
             {tr.formHeadline[0]}
             <br />
@@ -92,7 +95,7 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
           </p>
         </div>
 
-        <form onSubmit={submit} noValidate style={{ display: "flex", flexDirection: "column", gap: "clamp(1rem,2vw,1.5rem)", order: isAr ? 1 : 2 }}>
+        <form onSubmit={submit} noValidate style={{ display: "flex", flexDirection: "column", gap: "clamp(1rem,2vw,1.5rem)", order: mirror ? 1 : 2 }}>
           {([
             { key: "name" as const, label: tr.labelName, type: "text", placeholder: tr.placeholderName },
             { key: "email" as const, label: tr.labelEmail, type: "email", placeholder: tr.placeholderEmail },
@@ -105,7 +108,7 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
                 onFocus={(e) => (e.target.style.borderBottomColor = "var(--accent-dim)")}
                 onBlur={(e) => (e.target.style.borderBottomColor = errors[key] ? "rgba(255,100,100,0.5)" : "var(--line)")}
               />
-              {errors[key] && <p style={{ fontFamily: mFont, fontSize: isAr ? "0.8rem" : "0.7rem", color: "rgba(255,120,120,0.8)", marginTop: "0.2rem", textAlign: isAr ? "right" : "left" }}>{errors[key]}</p>}
+              {errors[key] && <p style={{ fontFamily: mFont, fontSize: isAr ? "0.8rem" : "0.7rem", color: "rgba(255,120,120,0.8)", marginTop: "0.2rem", textAlign: mirror ? "right" : "left" }}>{errors[key]}</p>}
             </div>
           ))}
 
@@ -116,7 +119,7 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
               <option value="" disabled style={{ background: "var(--bg)" }}>{tr.placeholderInterest}</option>
               {tr.interests.map((opt) => <option key={opt} value={opt} style={{ background: "var(--bg)", color: "var(--fg)" }}>{opt}</option>)}
             </select>
-            {errors.interest && <p style={{ fontFamily: mFont, fontSize: isAr ? "0.8rem" : "0.7rem", color: "rgba(255,120,120,0.8)", marginTop: "0.2rem", textAlign: isAr ? "right" : "left" }}>{errors.interest}</p>}
+            {errors.interest && <p style={{ fontFamily: mFont, fontSize: isAr ? "0.8rem" : "0.7rem", color: "rgba(255,120,120,0.8)", marginTop: "0.2rem", textAlign: mirror ? "right" : "left" }}>{errors.interest}</p>}
           </div>
 
           <button type="submit" disabled={loading} className={s.submitButton}
@@ -126,13 +129,13 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
             {loading ? tr.submitting : tr.submitCTA}
           </button>
 
-          <p style={{ fontFamily: mFont, fontSize: isAr ? "0.8rem" : "0.7rem", color: "var(--fg-muted)", letterSpacing: isAr ? "0" : "0.12em", lineHeight: 1.6, textAlign: isAr ? "right" : "left" }}>
+          <p style={{ fontFamily: mFont, fontSize: isAr ? "0.8rem" : "0.7rem", color: "var(--fg-muted)", letterSpacing: isAr ? "0" : "0.12em", lineHeight: 1.6, textAlign: mirror ? "right" : "left" }}>
             {tr.formDisclaimer}
           </p>
         </form>
       </div>
 
-      <div style={{ position: "absolute", left: isAr ? "clamp(1.5rem,8vw,7rem)" : "auto", right: isAr ? "auto" : "clamp(1.5rem,8vw,7rem)", bottom: "clamp(2rem,6vw,5rem)", fontFamily: "var(--font-geist-mono)", fontSize: "clamp(6rem,18vw,16rem)", fontWeight: 700, color: "var(--ghost-num)", letterSpacing: "-0.05em", userSelect: "none", pointerEvents: "none", lineHeight: 1 }}>05</div>
+      <div style={{ position: "absolute", left: mirror ? "clamp(1.5rem,8vw,7rem)" : "auto", right: mirror ? "auto" : "clamp(1.5rem,8vw,7rem)", bottom: "clamp(2rem,6vw,5rem)", fontFamily: "var(--font-geist-mono)", fontSize: "clamp(6rem,18vw,16rem)", fontWeight: 700, color: "var(--ghost-num)", letterSpacing: "-0.05em", userSelect: "none", pointerEvents: "none", lineHeight: 1 }}>05</div>
     </section>
   );
 }
