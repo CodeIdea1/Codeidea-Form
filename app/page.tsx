@@ -14,14 +14,8 @@ import EarlyAccessForm from "./components/EarlyAccessForm";
 import SuccessState from "./components/SuccessState";
 
 export default function Page() {
-  const [lang, setLang] = useState<Lang>(() => {
-    if (typeof window === "undefined") return "en";
-    try { return window.localStorage.getItem("site-lang") === "ar" ? "ar" : "en"; } catch { return "en"; }
-  });
-  const [theme, setTheme] = useState<"dark" | "light">(() => {
-    if (typeof window === "undefined") return "dark";
-    try { return window.localStorage.getItem("site-theme") === "light" ? "light" : "dark"; } catch { return "dark"; }
-  });
+  const [lang, setLang] = useState<Lang>("en");
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [submitted, setSubmitted] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
   const [introDone, setIntroDone] = useState(false);
@@ -30,6 +24,16 @@ export default function Page() {
   const heroProgressCbRef = useRef<((p: number) => void) | null>(null);
   // Setter provided by HorizontalScroll to enable the scroll-driven scale on the first panel
   const hoverSetterRef = useRef<((v: boolean) => void) | null>(null);
+
+  // Sync lang/theme from localStorage after hydration (avoids SSR mismatch)
+  useEffect(() => {
+    try {
+      const storedLang = window.localStorage.getItem("site-lang");
+      if (storedLang === "ar") setLang("ar");
+      const storedTheme = window.localStorage.getItem("site-theme");
+      if (storedTheme === "light") setTheme("light");
+    } catch {}
+  }, []);
 
   const tr = t[lang];
 

@@ -22,7 +22,7 @@ export default function WhatYoureJoining({ tr, lang }: { tr: Translations; lang:
       <div className={s.grid}>
         {/* Left/Right: headline + footnote */}
         <div style={{ textAlign: mirror ? "right" : "left", order: mirror ? 2 : 1 }}>
-          <h2 style={{ fontFamily: hFont, fontSize: "clamp(2rem,5.2vw,4.25rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.3 : 1.0, color: "var(--fg)", marginBottom: "clamp(1rem,3vw,2rem)" }}>
+          <h2 style={{ fontFamily: hFont, fontSize: "clamp(1.65rem,5.2vw,4rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.3 : 1.0, color: "var(--fg)", marginBottom: "clamp(1rem,3vw,2rem)" }}>
             {tr.whatHeadline[0]}
             <br />
             <span style={{ color: "var(--accent)" }}>{tr.whatHeadline[1]}</span>

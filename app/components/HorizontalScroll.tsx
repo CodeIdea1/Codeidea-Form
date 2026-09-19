@@ -269,19 +269,24 @@ export default function HorizontalScroll({ children, onScrollToLast, onHeroProgr
     return (
       <div dir="ltr" className={s.mobileWrapper}>
         <ScrollProgressLine progressRef={progressRef} />
-        {panels.map((child, i) => (
-          <div 
-            key={i}
-            data-panel={i}
-            data-section={i === panels.length - 1 ? "form" : undefined}
-            style={{ 
-              minHeight: '100svh',
-              width: '100%'
-            }}
-          >
-            {child}
-          </div>
-        ))}
+        {panels.map((child, i) => {
+          // First (hero) and last (form) panels stay full-screen; middle panels
+          // shrink to their content so the sections sit closer together.
+          const fullHeight = i === 0 || i === panels.length - 1;
+          return (
+            <div
+              key={i}
+              data-panel={i}
+              data-section={i === panels.length - 1 ? "form" : undefined}
+              style={{
+                minHeight: fullHeight ? '100svh' : 'auto',
+                width: '100%'
+              }}
+            >
+              {child}
+            </div>
+          );
+        })}
       </div>
     );
   }

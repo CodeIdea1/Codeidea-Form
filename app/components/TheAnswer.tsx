@@ -12,7 +12,7 @@ export default function TheAnswer({ tr, lang }: { tr: Translations; lang: Lang }
   const dFont = isAr ? "var(--font-arabic)" : "var(--font-body)";
 
   return (
-    <section style={{ width: "100%", height: "100%", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(4rem,10vw,8rem) clamp(1.5rem,8vw,7rem)", position: "relative" }}>
+    <section style={{ width: "100%", height: "100%", minHeight: isMobile ? "auto" : "100svh", display: "flex", flexDirection: "column", justifyContent: "center", padding: isMobile ? "clamp(4rem,9vw,5.5rem) 1.25rem" : "clamp(4rem,10vw,8rem) clamp(1.5rem,8vw,7rem)", position: "relative" }}>
 
       <div style={{ marginBottom: "clamp(2rem,5vw,4rem)", display: "flex", alignItems: "center", gap: "1rem", flexDirection: mirror ? "row-reverse" : "row" }}>
         <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.72rem", letterSpacing: isAr ? "0" : "0.18em", color: "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase" }}>{tr.sectionLabel02}</span>
@@ -20,7 +20,7 @@ export default function TheAnswer({ tr, lang }: { tr: Translations; lang: Lang }
       </div>
 
       <div style={{ maxWidth: "900px", textAlign: mirror ? "right" : "left", marginLeft: mirror ? "auto" : 0 }}>
-        <h2 style={{ fontFamily: hFont, fontSize: "clamp(1.9rem,5.8vw,4.75rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.025em", lineHeight: isAr ? 1.3 : 1.1, color: "var(--fg)", marginBottom: "clamp(1.5rem,4vw,3rem)" }}>
+        <h2 style={{ fontFamily: hFont, fontSize: "clamp(1.65rem,5.2vw,4rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.025em", lineHeight: isAr ? 1.3 : 1.1, color: "var(--fg)", marginBottom: "clamp(1.5rem,4vw,3rem)" }}>
           {tr.answerLine1}
           <br />
           <span style={{ color: "var(--accent)" }}>{tr.answerLine2}</span>

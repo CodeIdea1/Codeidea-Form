@@ -35,6 +35,7 @@ export default function TheQuestion({ tr, lang }: { tr: Translations; lang: Lang
     <section
       ref={sectionRef}
       className={`${s.section} ${mirror ? s.sectionRtl : s.sectionLtr}`}
+      style={{ minHeight: isMobile ? "auto" : undefined }}
     >
       <div className={`${s.sectionLabel} ${mirror ? s.sectionLabelRtl : s.sectionLabelLtr}`} style={fadeIn("0s")}>
         <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.72rem", letterSpacing: isAr ? "0" : "0.18em", color: "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase" }}>
@@ -49,7 +50,7 @@ export default function TheQuestion({ tr, lang }: { tr: Translations; lang: Lang
         </p>
 
         <div className={`${s.quoteWrapper} ${mirror ? s.quoteWrapperRtl : s.quoteWrapperLtr}`} style={fadeIn("0.3s")}>
-          <p style={{ fontFamily: hFont, fontSize: "clamp(1.9rem,5.8vw,4.75rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.025em", lineHeight: isAr ? 1.3 : 1.1, color: "var(--fg)" }}>
+          <p style={{ fontFamily: hFont, fontSize: "clamp(1.65rem,5.2vw,4rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.025em", lineHeight: isAr ? 1.3 : 1.1, color: "var(--fg)" }}>
             {tr.questionQuote[0]}
             <br />
             <span style={{ color: "var(--accent)" }}>{tr.questionQuote[1]}</span>

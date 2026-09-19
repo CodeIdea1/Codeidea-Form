@@ -20,6 +20,13 @@
   border-left: none;
 }
 
+/* Mobile: let the section hug its content with tighter spacing */
+@media (max-width: 768px) {
+  .section {
+    padding: clamp(4rem, 9vw, 5.5rem) 1.25rem;
+  }
+}
+
 .sectionLabel {
   margin-bottom: clamp(2rem, 5vw, 4rem);
   display: flex;

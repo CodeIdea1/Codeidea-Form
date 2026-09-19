@@ -4,8 +4,8 @@ html.dark {
   --bg: #080808;
   --bg-rgb: 8, 8, 8;
   --fg: #f0ede8;
-  --fg-dim: #6b6760;
-  --fg-muted: #3a3835;
+  --fg-dim: #7a7774;
+  --fg-muted: #5a5754;
   --accent: #c8b89a;
   --accent-dim: #7a6e60;
   --line: rgba(240, 237, 232, 0.08);
@@ -25,6 +25,20 @@ html.light {
   --line: rgba(14, 13, 11, 0.1);
   --line-accent: rgba(138, 111, 78, 0.25);
   --ghost-num: rgba(14, 13, 11, 0.025);
+}
+
+@media (max-width: 768px) {
+  :root, html.dark, html.light {
+    --body-line-height: 1.5;
+    --body-font-weight: 400;
+  }
+}
+
+@media (min-width: 769px) {
+  :root, html.dark, html.light {
+    --body-line-height: 1.7;
+    --body-font-weight: 300;
+  }
 }
 
 *,
@@ -53,6 +67,13 @@ body {
 
 body[dir="rtl"] {
   font-family: var(--font-arabic), "Noto Naskh Arabic", serif;
+}
+
+@media (max-width: 768px) {
+  p {
+    line-height: 1.5 !important;
+    font-weight: 400 !important;
+  }
 }
 
 /* Grain overlay */

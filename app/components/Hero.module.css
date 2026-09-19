@@ -161,10 +161,7 @@
     height: 23vw !important;
     max-width: unset;
     max-height: unset;
-    /* Resting 3D rotation - same matrix GSAP applies for skewY:6, rotationY:-18,
-       rotationX:10, transformPerspective:900. Set here so the laptop's final
-       proportions are the baseline from the very first paint (no flash). */
-    transform: matrix3d(0.945417, 0.103507, 0.326375, -0.000362639, -0.0536602, 0.984808, 0.165149, -0.000183499, -0.304322, -0.173648, 0.936608, -0.00104068, 0, 0, 0, 1);
+    transform: none;
   }
 }
 
@@ -673,12 +670,14 @@
 
   .heading {
     width: 100%;
-    font-size: clamp(1.9rem, 5.8vw, 4.75rem);
+    font-size: clamp(1.85rem, 5.8vw, 4.2rem);
   }
 
   .heroDescription {
-    font-size: clamp(0.85rem, 4vw, 1rem);
-    max-width: 100%;
+    font-size: clamp(0.95rem, 4.3vw, 1.1rem);
+    max-width: 82%;
+    align-self: flex-end;
+    margin-left: auto;
     margin-top: 1rem;
   }
 
@@ -796,11 +795,11 @@
 
 @media (max-width: 480px) {
   .heading {
-    font-size: clamp(1.1rem, 6.5vw, 1.9rem);
+    font-size: clamp(1.45rem, 7.8vw, 2.3rem);
   }
 
   .heroDescription {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .ctaRow {

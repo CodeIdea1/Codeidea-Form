@@ -31,7 +31,7 @@ export const t = {
     answerLine2: "what happens behind the screen.",
     answerSub:
       "Creative development. Web animation. Interaction design. Creative coding. The thinking, techniques, and details that turn code into an experience.",
-    answerBadge: "First Cohort · Coming Soon",
+    answerBadge: "Assessment-Based · Limited Seats",
 
     sectionLabel03: "03 — The Journey",
     journeyHeadline: ["What happens after", "you join."],
@@ -70,13 +70,13 @@ export const t = {
     sectionLabel04: "04 — What You're Joining",
     whatHeadline: ["Don't just learn to code.", "Learn to create experiences."],
     whatAccent: "Learn to create experiences.",
-    disciplines: [
-      "Creative Web Development",
-      "Advanced Web Animation",
-      "Interactive Experiences",
-      "Motion & Interaction",
-      "Creative Coding",
-    ],
+disciplines: [
+  "Building Websites & Web Experiences",
+  "Web Motion & Animation",
+  "Interaction & Interactive Experiences",
+  "Creative Coding",
+  "Experimentation & New Ideas",
+],
     whatFootnote:
       "This is only a glimpse. The full curriculum comes after the assessment — because where you start matters.",
 
@@ -130,9 +130,9 @@ export const t = {
       { num: "04", label: "What You're Joining", section: 4 },
       { num: "05", label: "Early Access", section: 5 },
     ],
-    menuBrand: "MORS",
+    menuBrand: "Learn The Craft",
     menuClose: "Close",
-    menuCopyright: "© 2026 MORS",
+    menuCopyright: "© 2026",
   },
 
   ar: {
@@ -154,18 +154,18 @@ export const t = {
     scroll: "اكتشف",
 
     sectionLabel01: "٠١ — السؤال",
-    questionIntro: "من شهور وأنتم تسألوننا نفس السؤال.",
+    questionIntro:"دايمًا بيوصلنا نفس السؤال",
     questionQuote: ["\"كيف تبنون مواقع", "بهالمستوى؟\""],
     questionAccent: "بهالمستوى؟\"",
     questionClose:
-      "الحركة. التفاعل. الإحساس إن الموقع حيّ.\nسمعناكم.",
+      "الحركة. التفاعل. الإحساس إن الموقع حيّ.",
 
     sectionLabel02: "٠٢ — الجواب",
     answerLine1: "دلوقتي، هتتعلم",
     answerLine2: "إيه اللي بيحصل ورا الشاشة.",
     answerSub:
       "التطوير الإبداعي. أنيميشن الويب. تصميم التفاعل. البرمجة الإبداعية. طريقة التفكير، والتقنيات، والتفاصيل اللي بتحوّل الكود إلى تجربة.",
-    answerBadge: "الدفعة الأولى · قريبًا",
+    answerBadge: "بناءً على التقييم · أماكن محدودة",
 
     sectionLabel03: "٠٣ — الرحلة",
     journeyHeadline: ["إيه اللي بيحصل", "بعد ما تنضم؟"],
@@ -204,13 +204,13 @@ export const t = {
     sectionLabel04: "٠٤ — ماذا ستتعلّم",
     whatHeadline: ["مش بس هتتعلم تكتب كود.", "هتتعلم تصنع تجارب."],
     whatAccent: "هتتعلم تصنع تجارب.",
-    disciplines: [
-      "تطوير الويب الإبداعي",
-      "أنيميشن الويب المتقدم",
-      "التجارب التفاعلية",
-      "الحركة والتفاعل",
-      "البرمجة الإبداعية",
-    ],
+disciplines: [
+  "بناء مواقع وتجارب ويب",
+  "الحركة وأنيميشن الويب",
+  "التفاعل والتجارب التفاعلية",
+  "البرمجة الإبداعية",
+  "التجريب وصناعة أفكار جديدة",
+],
     whatFootnote:
       "دي مجرد لمحة. المنهج الكامل بييجي بعد التقييم — لأن البداية الصح بتفرق.",
 
@@ -264,9 +264,9 @@ export const t = {
       { num: "٠٤", label: "ماذا ستتعلّم", section: 4 },
       { num: "٠٥", label: "الوصول المبكر", section: 5 },
     ],
-    menuBrand: "MORS",
+    menuBrand: "تعلّم الحرفة",
     menuClose: "إغلاق",
-    menuCopyright: "© ٢٠٢٦ MORS",
+    menuCopyright: "© ٢٠٢٦",
   },
 } as const;
 

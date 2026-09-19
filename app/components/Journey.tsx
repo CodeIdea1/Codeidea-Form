@@ -12,7 +12,7 @@ export default function Journey({ tr, lang }: { tr: Translations; lang: Lang }) 
   const dFont = isAr ? "var(--font-arabic)" : "var(--font-body)";
 
   return (
-    <section style={{ width: "100%", height: "100%", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(4rem,8vw,6rem) clamp(1.5rem,8vw,7rem)", position: "relative", overflow: "hidden" }}>
+    <section style={{ width: "100%", height: "100%", minHeight: isMobile ? "auto" : "100svh", display: "flex", flexDirection: "column", justifyContent: "center", padding: isMobile ? "clamp(4rem,9vw,5.5rem) 1.25rem" : "clamp(4rem,8vw,6rem) clamp(1.5rem,8vw,7rem)", position: "relative", overflow: "hidden" }}>
 
       <div style={{ marginBottom: "clamp(1.5rem,4vw,3rem)", display: "flex", alignItems: "center", gap: "1rem", flexDirection: mirror ? "row-reverse" : "row" }}>
         <span style={{ fontFamily: mFont, fontSize: isAr ? "0.85rem" : "0.72rem", letterSpacing: isAr ? "0" : "0.18em", color: "var(--fg-muted)", textTransform: isAr ? "none" : "uppercase" }}>{tr.sectionLabel03}</span>

@@ -85,7 +85,7 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
 
       <div className={s.grid}>
         <div style={{ textAlign: mirror ? "right" : "left", order: mirror ? 2 : 1 }}>
-          <h2 style={{ fontFamily: hFont, fontSize: "clamp(2.2rem,5.3vw,3.75rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.3 : 1.0, color: "var(--fg)", marginBottom: "1rem" }}>
+          <h2 style={{ fontFamily: hFont, fontSize: "clamp(1.65rem,5.2vw,4rem)", fontWeight: 700, letterSpacing: isAr ? "-0.01em" : "-0.03em", lineHeight: isAr ? 1.3 : 1.0, color: "var(--fg)", marginBottom: "1rem" }}>
             {tr.formHeadline[0]}
             <br />
             <span style={{ color: "var(--accent)" }}>{tr.formHeadline[1]}</span>
@@ -123,9 +123,9 @@ export default function EarlyAccessForm({ onSuccess, tr, lang }: { onSuccess: (n
           </div>
 
           <button type="submit" disabled={loading} className={s.submitButton}
-            style={{ background: loading ? "var(--fg-muted)" : "var(--fg)", color: "var(--bg)", border: "none", padding: "1rem 2rem", fontSize: isAr ? "1rem" : "0.85rem", fontFamily: hFont, letterSpacing: isAr ? "0" : "0.2em", textTransform: isAr ? "none" : "uppercase", cursor: loading ? "not-allowed" : "pointer", transition: "background 0.3s, transform 0.3s", fontWeight: isAr ? 600 : 500, marginTop: "0.5rem" }}
-            onMouseEnter={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.background = "var(--accent)"; }}
-            onMouseLeave={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.background = "var(--fg)"; }}>
+            style={{ background: loading ? "var(--fg-muted)" : (isMobile ? "var(--accent)" : "var(--fg)"), color: "var(--bg)", border: "none", padding: isMobile ? "1.15rem 1.5rem" : "1rem 2rem", fontSize: isAr ? "1.05rem" : (isMobile ? "0.95rem" : "0.85rem"), fontFamily: hFont, letterSpacing: isAr ? "0" : (isMobile ? "0.12em" : "0.2em"), textTransform: isAr ? "none" : "uppercase", cursor: loading ? "not-allowed" : "pointer", transition: "background 0.3s, transform 0.3s, box-shadow 0.3s", fontWeight: isAr ? 600 : (isMobile ? 600 : 500), marginTop: "0.5rem" }}
+            onMouseEnter={(e) => { if (!loading && !isMobile) (e.currentTarget as HTMLButtonElement).style.background = "var(--accent)"; }}
+            onMouseLeave={(e) => { if (!loading && !isMobile) (e.currentTarget as HTMLButtonElement).style.background = "var(--fg)"; }}>
             {loading ? tr.submitting : tr.submitCTA}
           </button>
 

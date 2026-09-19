@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease, padding 0.3s ease, border-color 0.3s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .barEn { right: clamp(1.5rem, 8vw, 7rem); left: auto; }
 .barAr { left: clamp(1.5rem, 8vw, 7rem); right: auto; }
@@ -36,6 +36,9 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+  .barHidden {
+    transform: translateY(-110%) !important;
+  }
   .logo {
     height: 46px; /* Smaller logo on mobile */
   }

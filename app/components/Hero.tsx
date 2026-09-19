@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Translations, Lang } from "../i18n";
 import Image from "next/image";
 import gsap from "gsap";
@@ -353,19 +353,16 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
   }, [registerProgress]);
 
   // lap.png animation setup
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = lapRef.current;
     if (!el) return;
-    if (!active) return;
 
-    // In mobile: show immediately without animation
-    if (isMobile) {
+    if (window.innerWidth < 768) {
       el.style.opacity = '1';
       el.style.transform = 'none';
       return;
     }
 
-    // Desktop: appear immediately (already loaded), keep the laptop's resting 3D rotation
     gsap.set(el, {
       scale: 1,
       y: 0,
@@ -376,19 +373,7 @@ export default function Hero({ onCTA, tr, lang, theme, registerProgress, onHover
       transformPerspective: 900,
       force3D: true,
     });
-
-    const mountTween = gsap.to(el, {
-      scale: 1,
-      y: 0,
-      opacity: 1,
-      duration: 0.001,
-      ease: "none",
-    });
-
-    return () => {
-      mountTween.kill();
-    };
-  }, [active, isMobile]);
+  }, []);
 
   return (
     <>

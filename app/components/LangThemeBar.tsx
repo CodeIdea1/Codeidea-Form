@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Translations, Lang } from "../i18n";
 import Image from "next/image";
 import SiteMenu from "./SiteMenu";
 import s from "./LangThemeBar.module.css";
+import useIsMobile from "./useIsMobile";
 
 type Props = {
   lang: Lang;
@@ -19,6 +20,25 @@ export default function LangThemeBar({ lang, theme, tr, onLang, onTheme, onNavig
   const isDark = theme === "dark";
   const isAr = lang === "ar";
   const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+  const [hidden, setHidden] = useState(false);
+  const hideTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const onScroll = () => {
+      setHidden(true);
+      if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = window.setTimeout(() => setHidden(false), 2000);
+    };
+    document.addEventListener("scroll", onScroll, { capture: true, passive: true });
+    document.addEventListener("touchmove", onScroll, { passive: true });
+    return () => {
+      document.removeEventListener("scroll", onScroll, { capture: true });
+      document.removeEventListener("touchmove", onScroll);
+      if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+    };
+  }, [isMobile]);
 
   const onBtnEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.currentTarget.style.borderColor = "var(--accent-dim)";
@@ -31,7 +51,7 @@ export default function LangThemeBar({ lang, theme, tr, onLang, onTheme, onNavig
 
   return (
     <>
-    <div className={`${s.bar} ${isAr ? s.barAr : s.barEn} ${solid ? s.scrolled : ""}`}>
+    <div className={`${s.bar} ${isAr ? s.barAr : s.barEn} ${solid ? s.scrolled : ""} ${isMobile && hidden ? s.barHidden : ""}`}>
       {/* Logo */}
       <div className={`${s.logoWrap} ${isAr ? s.logoWrapAr : s.logoWrapEn}`}>
         <Image
